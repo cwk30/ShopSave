@@ -13,7 +13,7 @@ from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountFor
 
 
 
-@app.route('/')
+@app.route('/',methods=['GET', 'POST'])
 def landing():
     return render_template('index.html')
 
