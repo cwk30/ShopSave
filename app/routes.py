@@ -1,3 +1,4 @@
+from flask_login.mixins import UserMixin
 from app import app, db
 from flask import render_template
 from flask import url_for 
@@ -16,7 +17,7 @@ from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountFor
 def landing():
     return render_template('index.html')
 
-@app.route('/user')
+@app.route('/user',methods=['GET', 'POST'])
 def user():
     #if current_user.is_authenticated: #havent check if user is user or cashier
     #    return redirect(url_for('userhome'))
@@ -24,13 +25,13 @@ def user():
     userlogin_form=UserLoginForm()
     if userregister_form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(userregister_form.password.data).decode('utf-8')
-        user = user(userid=userregister_form.username.data, name=userregister_form.name.data, email=userregister_form.email.data, password=hashed_password, contactno=userregister_form.contactno.data)
+        user = user(userid=userregister_form.username.data, email=userregister_form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
         return redirect(url_for('user'))
     if userlogin_form.validate_on_submit():
-        user = user.query.filter_by(username=userlogin_form.username.data).first()
+        user = UserMixin.query.filter_by(username=userlogin_form.username.data).first()
         if user and bcrypt.check_password_hash(userlogin_form.password, userlogin_form.password.data):
             login_user(user, remember=userlogin_form.remember.data)
             next_page = request.args.get('next')
