@@ -1,0 +1,114 @@
+{% extends "landinglayout.html" %}
+
+{% block content %}
+<!-- Header -->
+	<header id="header">
+		<div class="logo">
+			<span class="icon fa-gem"></span>
+		</div>
+		<div class="content">
+			<div class="inner">
+				<h1>ShopSave</h1>
+				<p>A digital voucher wallet for your customers. <br> Experience a world of convenience at your fingertips.</p>
+			</div>
+		</div>
+		<nav>
+			<ul>
+				<li><a href="#login">Login</a></li>
+				<li><a href="#register">Register</a></li>
+			</ul>
+		</nav>
+	</header>
+
+<!-- Main -->
+	<div id="main">
+
+		<!-- Login -->
+			<article id="login">
+				<h2 class="major">Login</h2>
+				<form method="post" action="{{url_for('cashierhome')}}">
+					<div class="fields">
+
+						<div class="field half">
+							<label for="storeid">Login ID</label>
+							<input type="text" name="storeid" id="storeid" />
+						</div>
+						<br>
+						<div class="field half">
+							<label for="password">Password</label>
+							<input type="password" name="password" id="password"/>
+						</div>
+					</div>
+					<ul class="actions">
+						<li><input type="submit" value="Login" class="primary" /></li>
+						<li><a href="#forgot" class="button">Forget Password</a></li>
+					</ul>
+				</form>
+				
+			</article>
+
+		<!-- Register -->
+			<article id="register">
+				<h2 class="major">Register</h2>
+				<form method="post" action="#">
+					<div class="fields">
+						<div class="field half">
+							<label for="name">Business Name</label>
+							<input type="text" name="name" id="name" />
+						</div>
+						<div class="field half">
+							<label for="storeid">Login ID</label>
+							<input type="text" name="storeid" id="storeid" />
+						</div>
+						<div class="field half">
+							<label for="email">Contact Email</label>
+							<input type="text" name="email" id="email" />
+						</div>
+						<div class="field half">
+							<label for="contactno">Contact Number</label>
+							<input type="text" name="contactno" id="contactno" />
+						</div>
+						<div class="field half">
+							<label for="message">Password</label>
+							<input type="password" name="password" id="password"/>
+						</div>
+						<div class="field half">
+							<label for="message">Confirm Password</label>
+							<input type="password" name="password" id="password"/>
+						</div>
+					</div>
+					<ul class="actions">
+						<li><input type="submit" value="Register" class="primary" /></li>
+					</ul>
+				</form>
+			</article>
+			
+		<!-- Forgot -->
+			<article id="forgot">
+				<h2 class="major">Forgot Password</h2>
+				<form method="post" action="#">
+					<div class="fields">
+
+						<div class="field half">
+							<label for="storeid">Login ID</label>
+							<input type="text" name="storeid" id="storeid" />
+						</div>
+						<br>
+						<div class="field half">
+							<label for="message">Password</label>
+							<input type="password" name="password" id="password"/>
+						</div>
+						<div class="field half">
+							<label for="message">Confirm Password</label>
+							<input type="password" name="password" id="password"/>
+						</div>
+					</div>
+					<ul class="actions">
+						<li><input type="submit" value="Update Password" class="primary" /></li>
+					</ul>
+				</form>
+				
+			</article>						
+
+	</div>
+{% endblock %}
