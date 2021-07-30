@@ -13,18 +13,18 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(60), nullable=False)
     #contactno = db.Column(db.Integer)
 
-    def get_reset_token(self, expires_sec=1800):
-        s = Serializer(app.config['SECRET_KEY'], expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+    #def get_reset_token(self, expires_sec=1800):
+    #    s = Serializer(app.config['SECRET_KEY'], expires_sec)
+    #    return s.dumps({'user_id': self.id}).decode('utf-8')
 
-    @staticmethod 
-    def verify_reset_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
-        try:
-            userid = s.loads(token)['user_id']
-        except:
-            return None
-        return User.query.get(username)
+    #@staticmethod 
+    #def verify_reset_token(token):
+    #    s = Serializer(app.config['SECRET_KEY'])
+    #    try:
+    #        userid = s.loads(token)['user_id']
+    #    except:
+    #        return None
+    #    return User.query.get(username)
 
 
     def __repr__(self): 

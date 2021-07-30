@@ -1,5 +1,5 @@
 from flask_login.mixins import UserMixin
-from app import app, db
+from app import app, db, bcrypt
 from flask import render_template
 from flask import url_for 
 from flask import flash 
