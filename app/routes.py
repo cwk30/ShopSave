@@ -41,7 +41,7 @@ def users():
             return redirect(url_for('userhome'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('user.html',registerform=userregister_form, loginform=userlogin_form)
+    return render_template('user.html',userregister_form=userregister_form, userlogin_form=userlogin_form)
 
 @app.route('/cashier')
 def cashier():

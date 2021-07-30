@@ -26,43 +26,44 @@
 		<!-- Login -->
 			<article id="login">
 				<h2 class="major">Login</h2>
-				<form method="post" action="{{url_for('userhome')}}" enctype="multipart/form-data">
+				<form method="POST" action="">
+					
 					<div class="fields">
 
 						<div class="field half">
-							{{ loginform.username.label(class="form-control-label") }}
-							{% if loginform.username.errors %}  
-								{{ loginform.username(class="form-control form-control-lg is-invalid") }}
+							{{ userlogin_form.username.label(class="form-control-label") }}
+							{% if userlogin_form.username.errors %}  
+								{{ userlogin_form.username(class="form-control form-control-lg is-invalid") }}
 								<div class="invalid-feedback">
-									{% for error in loginform.username.errors %}
+									{% for error in userlogin_form.username.errors %}
 										<span>{{ error }}</span> 
 									{% endfor %}
 								</div>
 							{% else %}
-								{{ loginform.username(class="form-control form-control-lg") }}
+								{{ userlogin_form.username(class="form-control form-control-lg") }}
 							{% endif %}
 						</div>
 						<br>
 						<div class="field half">
-							{{ loginform.password.label(class="form-control-label") }}
-                    {% if loginform.password.errors %}  
-                        {{ loginform.password(class="form-control form-control-lg is-invalid") }}
+							{{ userlogin_form.password.label(class="form-control-label") }}
+                    {% if userlogin_form.password.errors %}  
+                        {{ userlogin_form.password(class="form-control form-control-lg is-invalid") }}
                         <div class="invalid-feedback">
-                            {% for error in loginform.password.errors %}
+                            {% for error in userlogin_form.password.errors %}
                                 <span>{{ error }}</span> 
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ loginform.password(class="form-control form-control-lg") }}
+                        {{ userlogin_form.password(class="form-control form-control-lg") }}
                     {% endif %}
 						</div>
 					</div>
 					<div>
-						{{ loginform.remember(class="form-check-input") }}
-						{{ loginform.remember.label(class="form-check-label") }}
+						{{ userlogin_form.remember(class="form-check-input") }}
+						{{ userlogin_form.remember.label(class="form-check-label") }}
 					</div>
 					<ul class="actions">
-						<li>{{ loginform.submit(class="btn btn-outline-info") }}</li>
+						<li>{{ userlogin_form.submit(class="btn btn-outline-info") }}</li>
 						<li><a href="#forgot" class="button">Forget Password</a></li>
 					</ul>
 				</form>
@@ -72,65 +73,66 @@
 		<!-- Register -->
 			<article id="register">
 				<h2 class="major">Register</h2>
-				<form method="post" enctype="multipart/form-data">
+				<form method="POST" action="">
+					
 					<div class="fields">
 						<div class="field half">
-							{{ registerform.username.label(class="form-control-label") }}
+							{{ userregister_form.username.label(class="form-control-label") }}
 
-							{% if registerform.username.errors %}  
-								{{ registerform.username(class="form-control form-control-lg is-invalid") }}
+							{% if userregister_form.username.errors %}  
+								{{ userregister_form.username(class="form-control form-control-lg is-invalid") }}
 								<div class="invalid-feedback">
-									{% for error in registerform.username.errors %}
+									{% for error in userregister_form.username.errors %}
 										<span>{{ error }}</span> 
 									{% endfor %}
 								</div>
 							{% else %}
-								{{ registerform.username(class="form-control form-control-lg") }}
+								{{ userregister_form.username(class="form-control form-control-lg") }}
 							{% endif %}
 						</div>
 
 						<div class="field half">
-							{{ registerform.email.label(class="form-control-label") }}
-							{% if registerform.email.errors %}  
-								{{ registerform.email(class="form-control form-control-lg is-invalid") }}
+							{{ userregister_form.email.label(class="form-control-label") }}
+							{% if userregister_form.email.errors %}  
+								{{ userregister_form.email(class="form-control form-control-lg is-invalid") }}
 								<div class="invalid-feedback">
-									{% for error in registerform.email.errors %}
+									{% for error in userregister_form.email.errors %}
 										<span>{{ error }}</span> 
 									{% endfor %}
 								</div>
 							{% else %}
-								{{ registerform.email(class="form-control form-control-lg") }}
+								{{ userregister_form.email(class="form-control form-control-lg") }}
 							{% endif %}
 						</div>
 						<div class="field half">
-							{{ registerform.password.label(class="form-control-label") }}
-							{% if registerform.password.errors %}  
-								{{ registerform.password(class="form-control form-control-lg is-invalid") }}
+							{{ userregister_form.password.label(class="form-control-label") }}
+							{% if userregister_form.password.errors %}  
+								{{ userregister_form.password(class="form-control form-control-lg is-invalid") }}
 								<div class="invalid-feedback">
-									{% for error in registerform.password.errors %}
+									{% for error in userregister_form.password.errors %}
 										<span>{{ error }}</span> 
 									{% endfor %}
 								</div>
 							{% else %}
-								{{ registerform.password(class="form-control form-control-lg") }}
+								{{ userregister_form.password(class="form-control form-control-lg") }}
 							{% endif %}
 						</div>
 						<div class="field half">
-							{{ registerform.confirm_password.label(class="form-control-label") }}
-							{% if registerform.confirm_password.errors %} 
-								{{ registerform.confirm_password(class="form-control form-control-lg is-invalid") }}
+							{{ userregister_form.confirm_password.label(class="form-control-label") }}
+							{% if userregister_form.confirm_password.errors %} 
+								{{ userregister_form.confirm_password(class="form-control form-control-lg is-invalid") }}
 								<div class="invalid-feedback">
-									{% for error in registerform.confirm_password.errors %}
+									{% for error in userregister_form.confirm_password.errors %}
 										<span>{{ error }}</span> 
 									{% endfor %}
 								</div>
 							{% else %}
-								{{ registerform.confirm_password(class="form-control form-control-lg") }}
+								{{ userregister_form.confirm_password(class="form-control form-control-lg") }}
 							{% endif %}
 						</div>
 					</div>
 					<ul class="actions">
-						{{ registerform.submit(class="btn btn-outline-info") }}
+						{{ userregister_form.submit(class="btn btn-outline-info") }}
 					</ul>
 				</form>
 			</article>
