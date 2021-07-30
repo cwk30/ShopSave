@@ -18,18 +18,20 @@ def landing():
     return render_template('index.html')
 
 @app.route('/user',methods=['GET', 'POST'])
-def user():
+def users():
     #if current_user.is_authenticated: #havent check if user is user or cashier
     #    return redirect(url_for('userhome'))
     userregister_form = UserRegistrationForm()
     userlogin_form=UserLoginForm()
+    print('hi')
     if userregister_form.validate_on_submit():
+        print('valid')
         hashed_password = bcrypt.generate_password_hash(userregister_form.password.data).decode('utf-8')
         user = user(userid=userregister_form.username.data, email=userregister_form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
-        return redirect(url_for('user'))
+        return redirect(url_for('users'))
     if userlogin_form.validate_on_submit():
         user = UserMixin.query.filter_by(username=userlogin_form.username.data).first()
         if user and bcrypt.check_password_hash(userlogin_form.password, userlogin_form.password.data):
