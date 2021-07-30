@@ -10,6 +10,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountForm)
+from app.models import (User)
 
 
 
