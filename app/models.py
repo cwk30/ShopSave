@@ -3,11 +3,11 @@ from datetime import datetime
 from flask_login import UserMixin
 
 @login_manager.user_loader
-def load_user(userid):
-    return User.query.get(int(userid))
+def load_user(username):
+    return User.query.get(int(username))
 
 class User(db.Model, UserMixin):
-    userid = db.Column(db.Integer, primary_key = True) 
+    username = db.Column(db.Integer, primary_key = True) 
     #name = db.Column(db.String(20), unique=True, nullable=False) 
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
@@ -24,8 +24,8 @@ class User(db.Model, UserMixin):
             userid = s.loads(token)['user_id']
         except:
             return None
-        return User.query.get(userid)
+        return User.query.get(username)
 
 
     def __repr__(self): 
-        return f"User('{self.userid}', '{self.email}')"
+        return f"User('{self.username}', '{self.email}')"
