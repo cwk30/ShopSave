@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, RadioField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, ValidationError
-from app.models import User
+from app.models import (User)
 from flask_login import current_user
 
 
@@ -18,10 +18,10 @@ class UserRegistrationForm(FlaskForm):
 
     submit = SubmitField('Sign Up') 
 
-    def validate_contactno(self, contactno):
-        user = User.query.filter_by(contactno=contactno.data).first() 
-        if user:
-            raise ValidationError('That contact number is already registered. Please login with your registered account.')
+    #def validate_contactno(self, contactno):
+    #    user = User.query.filter_by(contactno=contactno.data).first() 
+    #    if user:
+    #        raise ValidationError('That contact number is already registered. Please login with your registered account.')
     
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first() 
