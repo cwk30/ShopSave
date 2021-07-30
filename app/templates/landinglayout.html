@@ -9,10 +9,17 @@
 		<noscript><link rel="stylesheet" href="{{ url_for('static', filename='assets_2/css/noscript.css')}}" /></noscript>
 	</head>
 	<body class="is-preload">
-
 		<!-- Wrapper -->
 			<div id="wrapper">
-
+				{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul class=flashes>
+					{% for message in messages %}
+					<li>{{ message }}</li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+				{% endwith %}
 				{% block content %}{% endblock %}
 
 

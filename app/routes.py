@@ -1,5 +1,5 @@
 from flask_login.mixins import UserMixin
-from app import app, db, bcrypt
+from app import app, db, bcrypt, login_manager
 from flask import render_template
 from flask import url_for 
 from flask import flash 
@@ -12,7 +12,9 @@ from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountForm)
 from app.models import (User)
 
-
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    return redirect('/user#login')
 
 @app.route('/',methods=['GET', 'POST'])
 def landing():
@@ -20,11 +22,10 @@ def landing():
 
 @app.route('/user',methods=['GET', 'POST'])
 def users():
-    #if current_user.is_authenticated: #havent check if user is user or cashier
-    #    return redirect(url_for('userhome'))
+    if current_user.is_authenticated: #havent check if user is user or cashier
+        return redirect(url_for('userhome'))
     userregister_form = UserRegistrationForm()
     userlogin_form=UserLoginForm()
-    print('hi')
     if userregister_form.validate_on_submit():
         print('valid')
         hashed_password = bcrypt.generate_password_hash(userregister_form.password.data).decode('utf-8')
@@ -32,10 +33,10 @@ def users():
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
-        return redirect(url_for('users'))
+        return redirect('/user#login')
     if userlogin_form.validate_on_submit():
         user = User.query.filter_by(username=userlogin_form.username.data).first()
-        if user and bcrypt.check_password_hash(userlogin_form.password, userlogin_form.password.data):
+        if user and bcrypt.check_password_hash(user.password, userlogin_form.password.data):
             login_user(user, remember=userlogin_form.remember.data)
             next_page = request.args.get('next')
             return redirect(url_for('userhome'))
@@ -48,14 +49,17 @@ def cashier():
     return render_template('cashier.html')
 
 @app.route('/user/home',methods=['GET', 'POST'])
+@login_required 
 def userhome():
     return render_template('userlanding.html')
 
 @app.route('/user/voucherwallet')
+@login_required
 def uservoucherwallet():
     return render_template('notyet.html')
 
 @app.route('/user/userQR')
+@login_required
 def userQR():
     return render_template('notyet.html')
 
@@ -66,3 +70,13 @@ def cashierhome():
 @app.route('/cashier/scanQR')
 def cashierqr():
     return render_template('notyet.html')
+
+@app.route("/user/logout")
+def logoutuser():
+    logout_user()
+    return redirect(url_for('users'))
+
+@app.route("/cashier/logout")
+def logoutcashier():
+    logout_user()
+    return redirect(url_for('cashier'))

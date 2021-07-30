@@ -18,7 +18,7 @@ class UserRegistrationForm(FlaskForm):
 
     submit = SubmitField('Sign Up') 
 
-    def validate_contactno(self, username):
+    def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first() 
         if user:
             raise ValidationError('That username is already registered. Please choose another.')
