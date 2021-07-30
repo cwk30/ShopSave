@@ -44,3 +44,29 @@ class UserUpdateAccountForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[Required(), EqualTo('password')])
 
     submit = SubmitField('Update') 
+
+class CashierRegistrationForm(FlaskForm):
+    username =  StringField("Business Name", validators=[Required(), Length(min=2, max=20)])
+    #name =  StringField("Name", validators=[Required(), Length(min=1, max=40)]) 
+
+    email = StringField('Business Email', validators=[Required(), Email()]) 
+    password = PasswordField('Password', validators=[Required()])
+    #contactno = StringField('Contact No.', validators=[Required(), Length(min=8, max=8)]) 
+
+    confirm_password = PasswordField('Confirm Password', validators=[Required(), EqualTo('password')])
+
+    submit = SubmitField('Sign Up') 
+    
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first() 
+        if user:
+            raise ValidationError('That email is already registered. Please login with your registered account.')
+
+class CashierLoginForm(FlaskForm):
+    email =  StringField("Email", validators=[Required(), Length(min=2, max=20)]) 
+
+    password = PasswordField('Password', validators=[Required()])
+
+    remember = BooleanField('Remember Me')
+
+    submit = SubmitField('Login') 

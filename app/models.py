@@ -12,7 +12,11 @@ class User(db.Model, UserMixin):
     #name = db.Column(db.String(20), unique=True, nullable=False) 
     email = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
+    cashier = db.Column(db.Integer, nullable=False)
     #contactno = db.Column(db.Integer)
+    #dateofbirth
+    #photo
+    #address
 
     #def get_reset_token(self, expires_sec=1800):
     #    s = Serializer(app.config['SECRET_KEY'], expires_sec)
