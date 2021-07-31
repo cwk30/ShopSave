@@ -28,7 +28,7 @@
 							<img src="{{url_for('static', filename='images/pic01.jpg')}}" alt="" />
 						</span>
 						<header class="major">
-							<h3><a href="landing.html" class="link">{{ voucher }}</a></h3>
+							<h3><a href="{{url_for('uservoucher', cashiername=voucher)}}" class="link">{{ voucher }}</a></h3>
 							<p>Ipsum dolor sit amet</p>
 						</header>
 					</article>
