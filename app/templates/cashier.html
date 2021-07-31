@@ -31,16 +31,16 @@
 				<div class="fields">
 
 					<div class="field half">
-						{{ cashierlogin_form.email.label(class="form-control-label") }}
-						{% if cashierlogin_form.email.errors %}  
-							{{ cashierlogin_form.email(class="form-control form-control-lg is-invalid") }}
+						{{ cashierlogin_form.username.label(class="form-control-label") }}
+						{% if cashierlogin_form.username.errors %}  
+							{{ cashierlogin_form.username(class="form-control form-control-lg is-invalid") }}
 							<div class="invalid-feedback">
-								{% for error in cashierlogin_form.email.errors %}
+								{% for error in cashierlogin_form.username.errors %}
 									<span>{{ error }}</span> 
 								{% endfor %}
 							</div>
 						{% else %}
-							{{ cashierlogin_form.email(class="form-control form-control-lg") }}
+							{{ cashierlogin_form.username(class="form-control form-control-lg") }}
 						{% endif %}
 					</div>
 					<br>

@@ -59,7 +59,7 @@ def cashier():
         flash("Your account has been created! You are now able to log in", 'success') 
         return redirect('/cashier#login')
     if cashierlogin_form.validate_on_submit():
-        user = User.query.filter_by(email=cashierlogin_form.email.data).first()
+        user = User.query.filter_by(username=cashierlogin_form.username.data).first()
         if user and bcrypt.check_password_hash(user.password, cashierlogin_form.password.data) and user.cashier==1:
             login_user(user, remember=cashierlogin_form.remember.data)
             next_page = request.args.get('next')
