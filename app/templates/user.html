@@ -27,7 +27,7 @@
 			<article id="login">
 				<h2 class="major">Login</h2>
 				<form method="POST" action="">
-					
+					{{ userlogin_form.hidden_tag() }}
 					<div class="fields">
 
 						<div class="field half">
@@ -74,7 +74,7 @@
 			<article id="register">
 				<h2 class="major">Register</h2>
 				<form method="POST" action="">
-					
+					{{ userregister_form.hidden_tag() }}
 					<div class="fields">
 						<div class="field half">
 							{{ userregister_form.username.label(class="form-control-label") }}

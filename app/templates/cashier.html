@@ -24,64 +24,118 @@
 	<div id="main">
 
 		<!-- Login -->
-			<article id="login">
-				<h2 class="major">Login</h2>
-				<form method="post" action="{{url_for('cashierhome')}}">
-					<div class="fields">
+		<article id="login">
+			<h2 class="major">Login</h2>
+			<form method="POST" action="">
+				{{ cashierlogin_form.hidden_tag() }}
+				<div class="fields">
 
-						<div class="field half">
-							<label for="storeid">Login ID</label>
-							<input type="text" name="storeid" id="storeid" />
-						</div>
-						<br>
-						<div class="field half">
-							<label for="password">Password</label>
-							<input type="password" name="password" id="password"/>
-						</div>
+					<div class="field half">
+						{{ cashierlogin_form.email.label(class="form-control-label") }}
+						{% if cashierlogin_form.email.errors %}  
+							{{ cashierlogin_form.email(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in cashierlogin_form.email.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ cashierlogin_form.email(class="form-control form-control-lg") }}
+						{% endif %}
 					</div>
-					<ul class="actions">
-						<li><input type="submit" value="Login" class="primary" /></li>
-						<li><a href="#forgot" class="button">Forget Password</a></li>
-					</ul>
-				</form>
-				
-			</article>
+					<br>
+					<div class="field half">
+						{{ cashierlogin_form.password.label(class="form-control-label") }}
+				{% if cashierlogin_form.password.errors %}  
+					{{ cashierlogin_form.password(class="form-control form-control-lg is-invalid") }}
+					<div class="invalid-feedback">
+						{% for error in cashierlogin_form.password.errors %}
+							<span>{{ error }}</span> 
+						{% endfor %}
+					</div>
+				{% else %}
+					{{ cashierlogin_form.password(class="form-control form-control-lg") }}
+				{% endif %}
+					</div>
+				</div>
+				<div>
+					{{ cashierlogin_form.remember(class="form-check-input") }}
+					{{ cashierlogin_form.remember.label(class="form-check-label") }}
+				</div>
+				<ul class="actions">
+					<li>{{ cashierlogin_form.submit(class="btn btn-outline-info") }}</li>
+					<li><a href="#forgot" class="button">Forget Password</a></li>
+				</ul>
+			</form>
+			
+		</article>
 
-		<!-- Register -->
-			<article id="register">
-				<h2 class="major">Register</h2>
-				<form method="post" action="#">
-					<div class="fields">
-						<div class="field half">
-							<label for="name">Business Name</label>
-							<input type="text" name="name" id="name" />
-						</div>
-						<div class="field half">
-							<label for="storeid">Login ID</label>
-							<input type="text" name="storeid" id="storeid" />
-						</div>
-						<div class="field half">
-							<label for="email">Contact Email</label>
-							<input type="text" name="email" id="email" />
-						</div>
-						<div class="field half">
-							<label for="contactno">Contact Number</label>
-							<input type="text" name="contactno" id="contactno" />
-						</div>
-						<div class="field half">
-							<label for="message">Password</label>
-							<input type="password" name="password" id="password"/>
-						</div>
-						<div class="field half">
-							<label for="message">Confirm Password</label>
-							<input type="password" name="password" id="password"/>
-						</div>
+	<!-- Register -->
+		<article id="register">
+			<h2 class="major">Register</h2>
+			<form method="POST" action="">
+				{{ cashierregister_form.hidden_tag() }}
+				<div class="fields">
+					<div class="field half">
+						{{ cashierregister_form.username.label(class="form-control-label") }}
+
+						{% if cashierregister_form.username.errors %}  
+							{{ cashierregister_form.username(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in cashierregister_form.username.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ cashierregister_form.username(class="form-control form-control-lg") }}
+						{% endif %}
 					</div>
-					<ul class="actions">
-						<li><input type="submit" value="Register" class="primary" /></li>
-					</ul>
-				</form>
-			</article>
+
+					<div class="field half">
+						{{ cashierregister_form.email.label(class="form-control-label") }}
+						{% if cashierregister_form.email.errors %}  
+							{{ cashierregister_form.email(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in cashierregister_form.email.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ cashierregister_form.email(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+					<div class="field half">
+						{{ cashierregister_form.password.label(class="form-control-label") }}
+						{% if cashierregister_form.password.errors %}  
+							{{ cashierregister_form.password(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in cashierregister_form.password.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ cashierregister_form.password(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+					<div class="field half">
+						{{ cashierregister_form.confirm_password.label(class="form-control-label") }}
+						{% if cashierregister_form.confirm_password.errors %} 
+							{{ cashierregister_form.confirm_password(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in cashierregister_form.confirm_password.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+						{% else %}
+							{{ cashierregister_form.confirm_password(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+				</div>
+				<ul class="actions">
+					{{ cashierregister_form.submit(class="btn btn-outline-info") }}
+				</ul>
+			</form>
+		</article>
 			
 		<!-- Forgot -->
 			<article id="forgot">
