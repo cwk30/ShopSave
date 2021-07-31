@@ -84,7 +84,7 @@ def uservoucherwallet():
             distinct_cashiers.append(voucher_data[i].cashiername)
     return render_template('wallet.html', data=distinct_cashiers)
 
-@app.route('/user/<string:cashiername>',methods=['GET', 'POST'])
+@app.route('/user/voucherwallet/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
 def uservoucher(cashiername):
     vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername)
