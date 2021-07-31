@@ -82,7 +82,18 @@ def userhome():
 @app.route('/user/voucherwallet')
 @login_required
 def uservoucherwallet():
-    return render_template('notyet.html')
+    voucher_data = Voucher.query.all()
+    distinct_cashiers = []
+    for i in range(len(voucher_data)):
+        if voucher_data[i].cashiername not in distinct_cashiers:
+            distinct_cashiers.append(voucher_data[i].cashiername)
+    return render_template('wallet.html', data=distinct_cashiers)
+
+@app.route('/user/<string:cashiername>',methods=['GET', 'POST'])
+@login_required 
+def uservoucher(cashiername):
+    vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername)
+    return render_template('uservoucher.html', data=vouchers_owned)
 
 @app.route('/voucher/<int:userid>')
 @login_required
