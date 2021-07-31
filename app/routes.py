@@ -9,8 +9,8 @@ from flask import jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
-from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
-from app.models import (User)
+from app.forms import (UserRegistrationForm, UserLoginForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
+from app.models import (User,Voucher,Vouchercat)
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -88,10 +88,25 @@ def userQR():
 def cashierhome():
     return render_template('cashierlanding.html')
 
-# @app.route('/cashier/profile/<current_user.id>')
-# @login_required
-# def cashierprofile():
-#     return render_template('cashierprofile.html')
+@app.route("/cashier/account", methods=['GET', 'POST'])
+@login_required 
+def account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.photo.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.photo = picture_file
+        current_user.address = form.address.data
+        current_user.contactno = form.contactno.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        current_user.password = hashed_password
+        db.session.commit()
+        flash('Your account info has been updated', 'success')
+        return redirect(url_for('account'))
+    #elif request.method == 'GET':
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
+    return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
+
 
 @app.route('/cashier/scanQR')
 @login_required
