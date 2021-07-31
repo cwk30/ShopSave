@@ -10,7 +10,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
-from app.models import (User)
+from app.models import (User, Voucher, VoucherCat)
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -76,7 +76,13 @@ def userhome():
 @app.route('/user/voucherwallet')
 @login_required
 def uservoucherwallet():
-    return render_template('notyet.html')
+    # vouchers_owned = Voucher.query.filter_by(username = current_user.username)
+    voucher_data = Voucher.query.all()
+    distinct_cashiers = []
+    for i in range(len(voucher_data)):
+        if voucher_data[i].cashiername not in distinct_cashiers:
+            distinct_cashiers.append(voucher_data[i].cashiername)
+    return render_template('wallet.html', data=distinct_cashiers)
 
 @app.route('/user/userQR')
 @login_required
