@@ -9,8 +9,13 @@ from flask import jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
+<<<<<<< HEAD
 from app.forms import (UserRegistrationForm, UserLoginForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
 from app.models import (User,Voucher,Vouchercat)
+=======
+from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
+from app.models import (User, Voucher, Vouchercat)
+>>>>>>> 27e94dd5fea8c420cc5eebd8de4cc84ccc39503d
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -71,12 +76,18 @@ def cashier():
 @app.route('/user/home',methods=['GET', 'POST'])
 @login_required 
 def userhome():
-    return render_template('userlanding.html')
+    data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
+    return render_template('userlanding.html', data=data)
 
 @app.route('/user/voucherwallet')
 @login_required
 def uservoucherwallet():
     return render_template('notyet.html')
+
+@app.route('/voucher/<int:userid>')
+@login_required
+def voucher(userid):
+    return render_template('notyet.html', userid=userid)
 
 @app.route('/user/userQR')
 @login_required
