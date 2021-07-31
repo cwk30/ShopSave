@@ -19,62 +19,40 @@
 
 <!-- Main -->
 	<div id="main">
-
 		<!-- One -->
 			<section id="one" class="tiles">
-				<article>
-					<span class="image">
-						<img src="{{url_for('static', filename='images/pic01.jpg')}}" alt="" />
-					</span>
-					<header class="major">
-						<h3><a href="landing.html" class="link">Aliquam</a></h3>
-						<p>Ipsum dolor sit amet</p>
-					</header>
-				</article>
-				<article>
-					<span class="image">
-						<img src="{{url_for('static', filename='images/pic02.jpg')}}" alt="" />
-					</span>
-					<header class="major">
-						<h3><a href="landing.html" class="link">Tempus</a></h3>
-						<p>feugiat amet tempus</p>
-					</header>
-				</article>
-				<article>
-					<span class="image">
-						<img src="{{url_for('static', filename='images/pic03.jpg')}}" alt="" />
-					</span>
-					<header class="major">
-						<h3><a href="landing.html" class="link">Magna</a></h3>
-						<p>Lorem etiam nullam</p>
-					</header>
-				</article>
-				<article>
-					<span class="image">
-						<img src="{{url_for('static', filename='images/pic04.jpg')}}" alt="" />
-					</span>
-					<header class="major">
-						<h3><a href="landing.html" class="link">Ipsum</a></h3>
-						<p>Nisl sed aliquam</p>
-					</header>
-				</article>
-				<article>
-					<span class="image">
-						<img src="{{url_for('static', filename='images/pic05.jpg')}}" alt="" />
-					</span>
-					<header class="major">
-						<h3><a href="landing.html" class="link">Consequat</a></h3>
-						<p>Ipsum dolor sit amet</p>
-					</header>
-				</article>
-				<article>
-					<span class="image">
-						<img src="{{url_for('static', filename='images/pic06.jpg')}}" alt="" />
-					</span>
-					<header class="major">
-						<h3><a href="landing.html" class="link">Etiam</a></h3>
-						<p>Feugiat amet tempus</p>
-					</header>
-				</article>
+				{% for vouchers in data %}
+					<!-- <article>
+						<span class="image">
+							<img src="{{url_for('static', filename='images/pic02.jpg')}}" alt="" />
+						</span>
+						<header class="major">
+							<h3><a href="{{url_for('userhome', userid=vouchers.id)}}" class="link">{{ vouchers.value }}</a></h3>
+							<p>{{ vouchers.cashiername }}</p>
+						</header>
+					</article> -->
+
+					<div class="voucher-card">
+						<div class="voucher-main">
+						  <div class="voucher-co-img">
+							<img
+							  src="https://i.pinimg.com/originals/c7/84/67/c78467db9ff497393cb548a48f02d451.png"
+							  alt=""
+							/>
+						  </div>
+						  <div class="voucher-vertical"></div>
+						  <div class="voucher-content">
+							<div class="voucher-title">{{ vouchers.cashiername }}</div>
+							<div class="voucher-content">$ <span>{{ vouchers.value }}</span></div>
+							<div class="voucher-expiry">Valid till 30 April 2021</div>
+						  </div>
+						</div>
+						<div class="claim-button-body">
+						  <a href="{{url_for('userhome', userid=vouchers.id)}}" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Claim</button></a>
+						</div>
+					  </div>
+
+
+				{% endfor %}
 			</section>
 {% endblock %}

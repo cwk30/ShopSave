@@ -15,7 +15,7 @@ class Voucher(db.Model):
     transfer = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Integer, nullable=False)
 
-class VoucherCat(db.Model):
+class Vouchercat(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     value = db.Column(db.Integer, nullable=False)
     transfer = db.Column(db.Integer, nullable=False)
