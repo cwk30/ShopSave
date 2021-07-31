@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm 
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, RadioField, SelectField, IntegerField
+from wtforms import StringField, PasswordField, IntegerField, SubmitField, BooleanField, TextAreaField, RadioField, SelectField
 from wtforms.validators import Required, Length, Email, EqualTo, ValidationError
 from app.models import (User)
 from flask_login import current_user
@@ -80,3 +80,8 @@ class CashierLoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
 
     submit = SubmitField('Login') 
+
+class BuyForm(FlaskForm):
+    quantity = IntegerField('Quantity', validators=[Required()])
+
+    submit = SubmitField('Buy')

@@ -1,0 +1,74 @@
+{% extends "userlayout.html" %}
+
+{% block content %}
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main" class="alt">
+
+						<!-- One -->
+							<section id="one">
+								<div class="inner">
+									<header class="major">
+										<h1>{{ voucherData.cashiername }}</h1>
+									</header>
+									<div class="voucher-card">
+										<div class="voucher-main">
+										  <div class="voucher-co-img">
+											<img
+											  src="https://i.pinimg.com/originals/c7/84/67/c78467db9ff497393cb548a48f02d451.png"
+											  alt=""
+											/>
+										  </div>
+										  <div class="voucher-vertical"></div>
+										  <div class="voucher-content">
+											<div class="voucher-title">Voucher</div>
+											<div class="voucher-content">$ <span>{{ voucherData.value }}</span></div>
+											<div class="voucher-expiry">Valid for {{ voucherData.expirydur }} Days</div>
+										  </div>
+										</div>
+									  </div>
+									<!-- Content -->
+										<h2 id="content">Cost: ${{ voucherData.cost }}</h2>
+										{% if voucherData.transfer %}
+											<h3 id="content">Transferrable: Yes</h3>
+										{% else %}
+											<h3 id="content">Transferrable: No</h3>
+										{% endif %}
+
+										<h3 id="content">Sold {{ voucherData.sold }}</h3>
+										<p>This voucher can be used for any products offered by {{ voucherData.cashiername }}</p>
+										
+								</div>
+							</section>
+					</div>
+
+				<!-- Contact -->
+				<form method="POST" action="">
+					<div class="fields">
+
+						<div class="field half">
+							{{ buy_form.quantity(class="form-control-label") }}
+						</div>
+
+					</div>
+					<div class="actions" style="margin-left:65%;">
+						{{ buy_form.submit(class="btn btn-outline-info") }}
+						<!-- Send to url(uservoucherwallet) -->
+					</div>
+				</form>
+
+
+			</div>
+{% endblock %}
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
