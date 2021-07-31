@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>ShopSave</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="{{url_for('static', filename='assets/css/main.css')}}" />
+		<noscript><link rel="stylesheet" href="{{url_for('static', filename='assets/css/noscript.css')}}" /></noscript>
+	</head>
+	<body class="is-preload">
+		<!-- Nav -->
+		<nav id="nav">
+			<ul class="container">
+				<li><a href="{{url_for('cashierhome')}}">Vouchers</a></li>
+				<li><a href="{{url_for('cashierqr')}}">Scan QR</a></li>
+			</ul>
+		</nav>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header" class="alt">
+
+					</header>
+					{% with messages = get_flashed_messages() %}
+					{% if messages %}
+						<ul class=flashes>
+						{% for message in messages %}
+						<li>{{ message }}</li>
+						{% endfor %}
+						</ul>
+					{% endif %}
+					{% endwith %}
+
+					<!-- Main -->
+						<div id="main" class="alt">
+
+							<!-- One -->
+								<section id="one">
+									<div class="inner">
+										<header class="major">
+											<h1>Scan QR</h1>
+										</header>
+										<div id="qr-reader" style="max-width: 90%"></div>
+
+									</div>
+								</section>
+
+						</div>
+
+	<!-- Footer -->
+	<footer id="footer">
+		<div class="inner">
+			<ul class="icons">
+				<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+				<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+				<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+				<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+				<li><a href="#" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+				<li><a href="/cashier/logout" class="icon brands alt fa-sign-out-alt"><span class="label">Sign Out</span></a></li>
+				
+			</ul>
+			<ul class="copyright">
+				<li>&copy; ShopSave</li>
+			</ul>
+		</div>
+	</footer>
+
+</div>
+
+<!-- Scripts -->
+<script src="{{url_for('static', filename='assets/js/jquery.min.js')}}"></script>
+<script src="{{url_for('static', filename='assets/js/jquery.scrolly.min.js')}}"></script>
+<script src="{{url_for('static', filename='assets/js/jquery.scrollex.min.js')}}"></script>
+<script src="{{url_for('static', filename='assets/js/browser.min.js')}}"></script>
+<script src="{{url_for('static', filename='assets/js/breakpoints.min.js')}}"></script>
+<script src="{{url_for('static', filename='assets/js/util.js')}}"></script>
+<script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
+<script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
+<script type="text/javascript">
+class Html5Qrcode {
+    constructor(elementId: string, config: Html5QrcodeFullConfig) {}
+
+    /** Start scanning. */
+    start(cameraIdOrConfig: Html5QrcodeIdentifier,
+        configuration: Html5QrcodeCameraScanConfig | undefined,
+        qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
+        qrCodeErrorCallback: QrcodeErrorCallback | undefined,
+    ): Promise<null> {}
+
+    /** Stop scanning. */
+    stop(): Promise<void> {}
+
+    /** Clear the rendered surface. */
+    clear(): void {}
+
+    /** Returns list of cameras in the device, invokes permission request. */
+    static getCameras(): Promise<Array<CameraDevice>> {}
+}
+</script>
+</body>
+</html>

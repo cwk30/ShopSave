@@ -9,6 +9,7 @@ from flask import jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
+
 from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UserUpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
 from app.models import (User, Voucher, Vouchercat)
 
@@ -77,7 +78,18 @@ def userhome():
 @app.route('/user/voucherwallet')
 @login_required
 def uservoucherwallet():
-    return render_template('notyet.html')
+    voucher_data = Voucher.query.all()
+    distinct_cashiers = []
+    for i in range(len(voucher_data)):
+        if voucher_data[i].cashiername not in distinct_cashiers:
+            distinct_cashiers.append(voucher_data[i].cashiername)
+    return render_template('wallet.html', data=distinct_cashiers)
+
+@app.route('/user/<string:cashiername>',methods=['GET', 'POST'])
+@login_required 
+def uservoucher(cashiername):
+    vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername)
+    return render_template('uservoucher.html', data=vouchers_owned)
 
 @app.route('/voucher/<int:voucherid>')
 @login_required
@@ -101,10 +113,30 @@ def userQR():
 def cashierhome():
     return render_template('cashierlanding.html')
 
+@app.route("/cashier/account", methods=['GET', 'POST'])
+@login_required 
+def account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.photo.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.photo = picture_file
+        current_user.address = form.address.data
+        current_user.contactno = form.contactno.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        current_user.password = hashed_password
+        db.session.commit()
+        flash('Your account info has been updated', 'success')
+        return redirect(url_for('account'))
+    #elif request.method == 'GET':
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
+    return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
+
+
 @app.route('/cashier/scanQR')
 @login_required
 def cashierqr():
-    return render_template('notyet.html')
+    return render_template('scanqr.html')
 
 @app.route("/user/logout")
 @login_required

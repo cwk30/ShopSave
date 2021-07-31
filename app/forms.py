@@ -1,6 +1,10 @@
 from flask_wtf import FlaskForm 
 from flask_wtf.file import FileField, FileAllowed
+<<<<<<< HEAD
 from wtforms import StringField, PasswordField, IntegerField, SubmitField, BooleanField, TextAreaField, RadioField, SelectField
+=======
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, RadioField, SelectField, IntegerField
+>>>>>>> 8c2f8654790296a0e01fca8af96b02079c44dfcc
 from wtforms.validators import Required, Length, Email, EqualTo, ValidationError
 from app.models import (User)
 from flask_login import current_user
@@ -43,6 +47,16 @@ class UserUpdateAccountForm(FlaskForm):
     password = PasswordField('Password', validators=[Required()]) 
     confirm_password = PasswordField('Confirm Password', validators=[Required(), EqualTo('password')])
 
+    submit = SubmitField('Update') 
+
+class UpdateAccountForm(FlaskForm):
+    
+    address = StringField("Address", validators=[]) 
+    password = PasswordField('Password', validators=[Required()]) 
+    confirm_password = PasswordField('Confirm Password', validators=[Required(), EqualTo('password')])
+    photo = FileField('Upload Photo', validators=[FileAllowed(['jpg', 'png'])])
+    contactno = IntegerField("Contact No.", validators=[])
+    
     submit = SubmitField('Update') 
 
 class CashierRegistrationForm(FlaskForm):
