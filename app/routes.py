@@ -88,10 +88,15 @@ def userQR():
 def cashierhome():
     return render_template('cashierlanding.html')
 
+# @app.route('/cashier/profile/<current_user.id>')
+# @login_required
+# def cashierprofile():
+#     return render_template('cashierprofile.html')
+
 @app.route('/cashier/scanQR')
 @login_required
 def cashierqr():
-    return render_template('notyet.html')
+    return render_template('scanqr.html')
 
 @app.route("/user/logout")
 @login_required
