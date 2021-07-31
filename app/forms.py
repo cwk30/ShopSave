@@ -63,7 +63,7 @@ class CashierRegistrationForm(FlaskForm):
             raise ValidationError('That email is already registered. Please login with your registered account.')
 
 class CashierLoginForm(FlaskForm):
-    email =  StringField("Email", validators=[Required(), Length(min=2, max=20)]) 
+    username =  StringField("Username", validators=[Required(), Length(min=2, max=20)]) 
 
     password = PasswordField('Password', validators=[Required()])
 
