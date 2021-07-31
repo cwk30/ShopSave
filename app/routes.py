@@ -10,7 +10,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
-from app.models import (User, Voucher, VoucherCat)
+from app.models import (User, Voucher, Vouchercat)
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
