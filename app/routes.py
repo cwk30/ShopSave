@@ -1,6 +1,7 @@
 from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
 from flask import render_template
+from flask import jsonify, make_response
 from flask import url_for 
 from flask import flash 
 from flask import redirect
@@ -12,6 +13,7 @@ from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
 from app.models import (User, Voucher, Vouchercat)
 import qrcode
+import datetime
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -169,3 +171,22 @@ def logoutuser():
 def logoutcashier():
     logout_user()
     return redirect(url_for('cashier'))
+
+@app.route("/cashier/scanQR/<int:voucherid>")
+@login_required
+def voucherclaim(voucherid):
+    voucher = Voucher.query.filter_by(id = voucherid).first()
+    date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
+    if voucher.cashiername==current_user.username and voucher.status==1:
+        reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
+        return make_response(jsonify(reply), 200) 
+    elif voucher.cashiername!=current_user.username:
+        reply={'status':'wrong store'}
+        return make_response(jsonify(reply),469)
+    elif voucher.status==0:
+        reply={'status':'voucher expired'}
+        return make_response(jsonify(reply),469)
+    elif voucher.status==1:
+        reply={'status':'voucher used alr'}
+        return make_response(jsonify(reply),469)        
+

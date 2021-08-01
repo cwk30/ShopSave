@@ -2,6 +2,32 @@
 
 {% block content %}
 
+<!-- Nav -->
+<div class="container">
+	<input type="radio" name="s" id="home" checked>
+    <input type="radio" name="s" id="wallet">
+    <input type="radio" name="s" id="code">
+	<nav>
+		<ul>
+			<label class="home" for="home">
+				<a href="{{url_for('userhome')}}">
+					<i class='bx bxs-home'></i>
+				</a>
+			</label>
+			<label class="wallet" for="wallet">
+				<a href="{{url_for('uservoucherwallet')}}">
+					<i class='bx bx-wallet-alt'></i>
+				</a>
+			</label>
+			<label class="code" for="code">
+				<a href="{{url_for('userQR')}}">
+					<i class='bx bx-qr'></i>
+				</a>
+			</label>
+		</ul>
+	</nav>
+</div>
+
 <!-- Banner -->
 	<section id="banner" class="major">
 		<div class="inner">

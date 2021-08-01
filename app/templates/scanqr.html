@@ -10,12 +10,24 @@
 	</head>
 	<body class="is-preload">
 		<!-- Nav -->
-		<nav id="nav">
-			<ul class="container">
-				<li><a href="{{url_for('cashierhome')}}">Vouchers</a></li>
-				<li><a href="{{url_for('cashierqr')}}">Scan QR</a></li>
-			</ul>
-		</nav>
+		<div class="container">
+			<input type="radio" name="s" id="home">
+			<input type="radio" name="s" id="code" checked>
+			<nav>
+				<ul>
+					<label class="home" for="home">
+						<a href="{{url_for('cashierhome')}}">
+							<i class='bx bxs-home'></i>
+						</a>
+					</label>
+					<label class="code" for="code">
+						<a href="{{url_for('cashierqr')}}">
+							<i class='bx bx-qr'></i>
+						</a>
+					</label>
+				</ul>
+			</nav>
+		</div>
 
 		<!-- Wrapper -->
 			<div id="wrapper">
