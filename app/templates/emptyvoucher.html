@@ -21,16 +21,13 @@
 	<div id="main">
 		<!-- One -->
 			<section id="one" class="tiles">
-				{% for voucher in data %}
-					<article>
-						<span class="image">
-							<img src="{{url_for('static', filename='images/pic01.jpg')}}" alt="" />
-						</span>
-						<header class="major">
-							<h3><a href="{{url_for('uservoucher', cashiername=voucher)}}" class="link">{{ voucher }}</a></h3>
-							<p>Ipsum dolor sit amet</p>
-						</header>
-					</article>
-				{% endfor %}
+				<article>
+					<header class="major fit">
+						<h3><a>There are no vouchers used or expired</a></h3>
+						<ul class="actions">
+							<li><a href="{{url_for('uservoucher', cashiername=data[0].cashiername)}}" class="button next scrolly">Go back to your available vouchers</a></li>
+						</ul>
+					</header>
+				</article>
 			</section>
 {% endblock %}
