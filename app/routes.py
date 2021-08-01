@@ -13,7 +13,7 @@ from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
 from app.models import (User, Voucher, Vouchercat)
 import qrcode
-from datetime import datetime
+import datetime
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
