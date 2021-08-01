@@ -1,9 +1,7 @@
-# environment dependency (folder)
 /ShopSaveEnv
 /__pycache__
-/app/__pycache__
+app/__pycache__
 /.idea
 /app/site.db
 # misc file to ignore
 .DS_Store 3 
-
