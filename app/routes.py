@@ -169,7 +169,3 @@ def voucherclaim():
     if voucher.cashiername==current_user.username and voucher.status==1:
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':voucher.expiry}
         return make_response(jsonify(reply), 200) 
-
-if voucher is valid (not expired/not used)
-if voucher by the user<--!
-if voucher is usable by that store
