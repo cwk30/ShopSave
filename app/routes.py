@@ -13,6 +13,7 @@ from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
 from app.models import (User, Voucher, Vouchercat)
 import qrcode
+from datetime import datetime
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -164,8 +165,19 @@ def logoutcashier():
 
 @app.route("/cashier/scan/<int:voucherid>")
 @login_required
-def voucherclaim():
+def voucherclaim(voucherid):
     voucher = Voucher.query.filter_by(id = voucherid).first()
+    date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
     if voucher.cashiername==current_user.username and voucher.status==1:
-        reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':voucher.expiry}
+        reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
+    elif voucher.cashiername!=current_user.username:
+        reply={'status':'wrong store'}
+        return make_response(jsonify(reply),469)
+    elif voucher.status==0:
+        reply={'status':'voucher expired'}
+        return make_response(jsonify(reply),469)
+    elif voucher.status==1:
+        reply={'status':'voucher used alr'}
+        return make_response(jsonify(reply),469)        
+
