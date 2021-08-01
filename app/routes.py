@@ -163,7 +163,7 @@ def logoutcashier():
     logout_user()
     return redirect(url_for('cashier'))
 
-@app.route("/cashier/scan/<int:voucherid>")
+@app.route("/cashier/scanQR/<int:voucherid>")
 @login_required
 def voucherclaim(voucherid):
     voucher = Voucher.query.filter_by(id = voucherid).first()
