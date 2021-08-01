@@ -1,6 +1,7 @@
 from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
 from flask import render_template
+from flask import jsonify, make_response
 from flask import url_for 
 from flask import flash 
 from flask import redirect
@@ -160,3 +161,15 @@ def logoutuser():
 def logoutcashier():
     logout_user()
     return redirect(url_for('cashier'))
+
+@app.route("/cashier/scan/<int:voucherid>")
+@login_required
+def voucherclaim():
+    voucher = Voucher.query.filter_by(id = voucherid).first()
+    if voucher.cashiername==current_user.username and voucher.status==1:
+        reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':voucher.expiry}
+        return make_response(jsonify(reply), 200) 
+
+if voucher is valid (not expired/not used)
+if voucher by the user<--!
+if voucher is usable by that store
