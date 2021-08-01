@@ -98,11 +98,10 @@ def uservoucher(cashiername):
 @login_required 
 def voucherqr(cashiername, voucherid):
     voucher = Voucher.query.filter_by(id = voucherid)
-    qr = qrcode.make("https://www.youtube.com/watch?v=-GmJLI122ZM&ab_channel=codebasics")
+    qr = qrcode.make('{}'.format(str(voucherid)))
     qr.save('app/static/qr/voucherqr{}.jpeg'.format(str(voucherid)), "JPEG")
     return render_template('voucherqr.html', data=voucher)
 
-@app.route('/voucher/<int:userid>')
 @app.route('/voucher/<int:voucherid>')
 @login_required
 def voucher(voucherid):
