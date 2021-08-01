@@ -3893,6 +3893,7 @@ nav{
   }
   
   nav ul{
+	padding-left: 0;
 	width: 90%;
 	display: flex;
 	align-items: center;
