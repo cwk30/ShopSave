@@ -11,7 +11,7 @@
 			<div class="content">
 				<p>Check out the available vouchers below!</p>
 				<ul class="actions">
-					<li><a href="#one" class="button next scrolly">Start saving</a></li>
+					<li><a href="{{url_for('userhome')}}" class="button next scrolly">Start saving</a></li>
 				</ul>
 			</div>
 		</div>
@@ -22,6 +22,16 @@
 		{% for vouchers in data %}
 			{{ vouchers }}
 		{% endfor %}
+		<section id="one">
+			<div class="row gtr-200">
+				<div class="col-6 col-12-medium">
+					<ul class="pagination">
+						<li><a href="#one" class="button small">Available</a></li>
+						<li><span class="button small disabled">Used/Expired</span></li>
+					</ul>
+				</div>
+			</div>
+		</section>
 		<!-- One -->
 			<section id="one" class="tiles">
 				{% for vouchers in data %}
