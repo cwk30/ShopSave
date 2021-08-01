@@ -56,7 +56,6 @@
 											<h1>Scan QR</h1>
 										</header>
 										<div id="qr-reader" style="max-width: 90%"></div>
-
 									</div>
 								</section>
 
@@ -91,26 +90,42 @@
 <script src="{{url_for('static', filename='assets/js/util.js')}}"></script>
 <script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
 <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script type="text/javascript">
-class Html5Qrcode {
-    constructor(elementId: string, config: Html5QrcodeFullConfig) {}
 
-    /** Start scanning. */
-    start(cameraIdOrConfig: Html5QrcodeIdentifier,
-        configuration: Html5QrcodeCameraScanConfig | undefined,
-        qrCodeSuccessCallback: QrcodeSuccessCallback | undefined,
-        qrCodeErrorCallback: QrcodeErrorCallback | undefined,
-    ): Promise<null> {}
 
-    /** Stop scanning. */
-    stop(): Promise<void> {}
-
-    /** Clear the rendered surface. */
-    clear(): void {}
-
-    /** Returns list of cameras in the device, invokes permission request. */
-    static getCameras(): Promise<Array<CameraDevice>> {}
+async function makeQrAuthenticationAPIcall(qrId) {
+	console.log('api resquest made');
+	const endpoint = '/cashier/scanQR/' + qrId;
+  	const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  if (response.status === 200) {
+	const jsonResponse = await response.json(); // check if we need to await again
+  	console.log(jsonResponse);
+	return jsonResponse;
+  } else {
+	console.log(response);
+	console.log(response.status, response.statusText);
+  }
 }
+
+
+async function onScanSuccess(decodedText, decodedResult) {
+	window.alert('successful scan');
+    console.log(`Code scanned = ${decodedText}`, decodedResult);
+	await makeQrAuthenticationAPIcall(decodedText);
+}
+
+
+var html5QrcodeScanner = new Html5QrcodeScanner(
+	"qr-reader", { fps: 10, qrbox: 250 });
+html5QrcodeScanner.render(onScanSuccess );
+
 </script>
 </body>
 </html>

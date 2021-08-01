@@ -12,6 +12,7 @@ from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
 from app.models import (User, Voucher, Vouchercat)
+from flask import request
 import qrcode
 import datetime
 
@@ -155,10 +156,12 @@ def account():
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
 
+#TODO: once implemented make it login required
 @app.route('/cashier/scanQR')
-@login_required
+#@login_required
 def cashierqr():
     return render_template('scanqr.html')
+
 
 @app.route("/user/logout")
 @login_required
@@ -172,16 +175,16 @@ def logoutcashier():
     logout_user()
     return redirect(url_for('cashier'))
 
-@app.route("/cashier/scanQR/<int:voucherid>")
+@app.route("/cashier/scanQR/<int:voucherid>", methods=['POST'])
 @login_required
 def voucherclaim(voucherid):
     voucher = Voucher.query.filter_by(id = voucherid).first()
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
-    if voucher.cashiername==current_user.username and voucher.status==1:
+    if voucher.username==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
-    elif voucher.cashiername!=current_user.username:
-        reply={'status':'wrong store'}
+    elif voucher.username!=current_user.username: 
+        reply={'status':'wrong user'}
         return make_response(jsonify(reply),469)
     elif voucher.status==0:
         reply={'status':'voucher expired'}
@@ -189,4 +192,6 @@ def voucherclaim(voucherid):
     elif voucher.status==1:
         reply={'status':'voucher used alr'}
         return make_response(jsonify(reply),469)        
-
+    else:
+        reply={'status':'invalid voucher'}
+        return make_response(jsonify(reply), 400)  
