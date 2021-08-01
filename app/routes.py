@@ -175,7 +175,7 @@ def voucherclaim(voucherid):
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
     elif voucher.username!=current_user.username: 
-        reply={'status':'wrong store'}
+        reply={'status':'wrong user'}
         return make_response(jsonify(reply),469)
     elif voucher.status==0:
         reply={'status':'voucher expired'}
