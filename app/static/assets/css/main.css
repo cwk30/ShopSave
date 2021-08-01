@@ -2520,6 +2520,23 @@ ul.icons li:last-child {
   }
 }
 
+ul.icons li a{
+	height: 2.3rem;
+	display:flex;
+	align-items: center;
+	justify-content: space-around;
+	}	
+
+ul.icons li a .bx{
+	font-size: 20px;
+	padding-right: 0.5rem;
+}
+
+ul.icons li a.button{
+	padding: 0 1.0rem;
+}
+
+
 /* Pagination */
 
 ul.pagination {
@@ -3894,7 +3911,7 @@ nav{
   
   nav ul{
 	padding-left: 0;
-	width: 90%;
+	width: 84%;
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
