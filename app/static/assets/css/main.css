@@ -3880,68 +3880,65 @@ body.is-preload #banner > .inner {
 
 /* Nav */
 
-#nav {
-  background-color: #232b47;
-  text-align: center;
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  z-index: 10000;
-  cursor: default;
-  height: 3.5em;
-  line-height: 3.5em;
+nav{
+	z-index: 10000;
+	width: 100%;
+	height: 4.0rem;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	background: #232B47;
+	border-top: 3px solid #5580ff;
+	text-align: center;
 }
 
-#nav ul {
-  margin-bottom: 0;
-  list-style: none;
-  padding-left: 0;
+nav ul{
+	width: 80%;
+	display: flex;
+	justify-content: space-around;
+	margin: auto;
 }
 
-#nav li {
-  display: inline-block;
-  padding-left: 0;
+nav label{
+	width: 4.0rem;
+	height: 4.0rem;
+	line-height: 70px;
+	font-size: 40px;
+	font-weight: 400;
+	color: #677091;
+	cursor: pointer;
+	transition: all 0.1s ease-in;
+	border-radius: 50%;
+	align-items: center;
+	justify-content: center;
 }
 
-#nav a {
-  -moz-transition: background-color 0.2s ease-in-out;
-  -webkit-transition: background-color 0.2s ease-in-out;
-  -ms-transition: background-color 0.2s ease-in-out;
-  transition: background-color 0.2s ease-in-out;
-  position: relative;
-  display: block;
-  color: #fff;
-  text-decoration: none;
-  outline: 0;
-  font-weight: 600;
-  border-radius: 8px;
-  color: #fff;
-  height: 2.5em;
-  line-height: 2.5em;
-  padding: 0 1.25em;
+nav label a{
+	color: inherit; 
+	text-decoration: none;
 }
 
-#nav a:hover {
-  color: #fff !important;
-  background: #ddd;
+nav label:active a:active .bx, 
+nav label:active a:visited .bx{
+	color: #1da1f2; 
+	text-decoration: none;
 }
 
-#nav a.active {
-  background: #484848;
+nav label:active{
+	background: #ddd;
 }
 
-#nav a.active:before {
-  content: "";
-  display: block;
-  position: absolute;
-  bottom: -0.6em;
-  left: 50%;
-  margin-left: -0.75em;
-  border-left: solid 0.75em transparent;
-  border-right: solid 0.75em transparent;
-  border-top: solid 0.6em #282828;
+#home:checked ~ nav label.home,
+#wallet:checked ~ nav label.wallet,
+#code:checked ~ nav label.code{
+	color: #1da1f2;
 }
+
+input[type=radio]{
+	display: none;
+}
+
+
 
 /* Wrapper */
 
