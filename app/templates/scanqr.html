@@ -6,6 +6,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="{{url_for('static', filename='assets/css/main.css')}}" />
+		<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 		<noscript><link rel="stylesheet" href="{{url_for('static', filename='assets/css/noscript.css')}}" /></noscript>
 	</head>
 	<body class="is-preload">
@@ -17,7 +18,7 @@
 				<ul>
 					<label class="home" for="home">
 						<a href="{{url_for('cashierhome')}}">
-							<i class='bx bx-home'></i>
+							<i class='bx bxs-home'></i>
 						</a>
 					</label>
 					<label class="code" for="code">
@@ -65,13 +66,9 @@
 	<footer id="footer">
 		<div class="inner">
 			<ul class="icons">
-				<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-				<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
-				<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
-				<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-				<li><a href="#" class="icon brands alt fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-				<li><a href="/cashier/logout" class="icon brands alt fa-sign-out-alt"><span class="label">Sign Out</span></a></li>
-				
+				<li><a href="/cashier/logout" class = "button">
+					<i class='bx bx-log-out' ></i> Log out
+				</a></li>
 			</ul>
 			<ul class="copyright">
 				<li>&copy; ShopSave</li>
