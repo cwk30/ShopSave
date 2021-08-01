@@ -9,13 +9,9 @@ from flask import jsonify
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
-<<<<<<< HEAD
-from app.forms import (UserRegistrationForm, UserLoginForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
-from app.models import (User,Voucher,Vouchercat)
-=======
 from app.forms import (UserRegistrationForm, UserLoginForm, UserUpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
 from app.models import (User, Voucher, Vouchercat)
->>>>>>> 27e94dd5fea8c420cc5eebd8de4cc84ccc39503d
+import qrcode
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
@@ -82,18 +78,29 @@ def userhome():
 @app.route('/user/voucherwallet')
 @login_required
 def uservoucherwallet():
-    voucher_data = Voucher.query.all()
+    voucher_data = Voucher.query.filter_by(username = current_user.username).all()
     distinct_cashiers = []
     for i in range(len(voucher_data)):
         if voucher_data[i].cashiername not in distinct_cashiers:
             distinct_cashiers.append(voucher_data[i].cashiername)
-    return render_template('wallet.html', data=distinct_cashiers)
+    if len(distinct_cashiers) == 0 :
+        return render_template('emptywallet.html')
+    else:
+        return render_template('wallet.html', data=distinct_cashiers)
 
 @app.route('/user/voucherwallet/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
 def uservoucher(cashiername):
     vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername)
     return render_template('uservoucher.html', data=vouchers_owned)
+
+@app.route('/user/voucherwallet/<string:cashiername>/<int:voucherid>',methods=['GET', 'POST'])
+@login_required 
+def voucherqr(cashiername, voucherid):
+    voucher = Voucher.query.filter_by(id = voucherid)
+    qr = qrcode.make("https://www.youtube.com/watch?v=-GmJLI122ZM&ab_channel=codebasics")
+    qr.save('app/static/qr/voucherqr{}.jpeg'.format(str(voucherid)), "JPEG")
+    return render_template('voucherqr.html', data=voucher)
 
 @app.route('/voucher/<int:userid>')
 @login_required

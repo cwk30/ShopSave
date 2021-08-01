@@ -19,22 +19,15 @@
 
 <!-- Main -->
 	<div id="main">
-		{{ data[0].cashiername }}
-		{% for vouchers in data %}
-			{{ vouchers }}
-		{% endfor %}
 		<!-- One -->
-			<section id="one" class="tiles">
-				{% for voucher in data %}
-					<article>
-						<span class="image">
-							<img src="{{url_for('static', filename='images/pic01.jpg')}}" alt="" />
-						</span>
-						<header class="major">
-							<h3><a href="{{url_for('uservoucher', cashiername=voucher)}}" class="link">{{ voucher }}</a></h3>
-							<p>Ipsum dolor sit amet</p>
-						</header>
-					</article>
-				{% endfor %}
+			<section id="one">
+				<article>
+					<header class="major">
+						<h3>{{ data[0].cashiername}}, {{data[0].value }}</h3>
+					</header>
+					<span class="image fit">
+						<img src = "{{ url_for('static', filename='qr/voucherqr{}.jpeg'.format(data[0].id))}}" alt=""/> 
+					</span>
+				</article>
 			</section>
 {% endblock %}
