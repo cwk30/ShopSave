@@ -1,0 +1,33 @@
+{% extends "userlayout.html" %}
+
+{% block content %}
+
+<!-- Banner -->
+	<section id="banner" class="major">
+		<div class="inner">
+			<header class="major">
+				<h1>Hi, {{ current_user.username }}</h1>
+			</header>
+			<div class="content">
+				<p>Check out the available vouchers here!</p>
+				<ul class="actions">
+					<li><a href="{{url_for('userhome')}}" class="button next scrolly">Start saving</a></li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+<!-- Main -->
+	<div id="main">
+		<!-- One -->
+			<section id="one" class="tiles">
+				<article>
+					<header class="major fit">
+						<h3><a>There are no vouchers used or expired</a></h3>
+						<ul class="actions">
+							<li><a href="{{url_for('uservoucher', cashiername=data[0].cashiername)}}" class="button next scrolly">Go back to your available vouchers</a></li>
+						</ul>
+					</header>
+				</article>
+			</section>
+{% endblock %}

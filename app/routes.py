@@ -93,8 +93,17 @@ def uservoucherwallet():
 @app.route('/user/voucherwallet/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
 def uservoucher(cashiername):
-    vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername)
+    vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1)
     return render_template('uservoucher.html', data=vouchers_owned)
+
+@app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
+@login_required 
+def unavailablevoucher(cashiername):
+    unavailable_vouchers = Voucher.query.filter(Voucher.status != 1, Voucher.username == current_user.username, Voucher.cashiername==cashiername).all()
+    if len(unavailable_vouchers) == 0 :
+        return render_template('emptyvoucher.html', data=cashiername)
+    else:
+        return render_template('uservoucher.html', data=unavailable_vouchers)
 
 @app.route('/user/voucherwallet/<string:cashiername>/<int:voucherid>',methods=['GET', 'POST'])
 @login_required 
