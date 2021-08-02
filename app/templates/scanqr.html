@@ -125,7 +125,7 @@ function validCall() {
 function inValidCall() {
 	makeQrAuthenticationAPIcall(2);
 }
-
+$( document ).ready(function() {
 async function onScanSuccess(decodedText, decodedResult) {
 	toastr.info('Validating QR Code');
     console.log(`Code scanned = ${decodedText}`, decodedResult);
@@ -149,20 +149,27 @@ elements.each(function(index, domElement) {
     }
 });
 
-var elements = $('button');
-
-// go through the elements and find the one with the value
-elements.each(function(index, domElement) {
-    var $element = $(domElement);
-    if ($element.text() === "Request Camera Permissions") {
-        $element.hide();
-		$element.click(); // to trigger the other element
-		return false; 
-    }
-});
-
-
+function hideButton(buttonName) {
+	var elements = $('button');
+	elements.each(function(index, domElement) {
+		var $element = $(domElement);
+		if ($element.text() === buttonName) {
+			$element.click(); // to trigger the other element
+			$element.hide();
+			return false; 
+		}
+	});
+}
+hideButton("Request Camera Permissions");
 document.getElementById('qr-reader__status_span').style.display = "none";
+
+var delayInMilliseconds = 820; //1 second
+
+setTimeout(function() {
+	hideButton("Start Scanning")
+}, delayInMilliseconds);
+
+});
 
 </script>
 </body>
