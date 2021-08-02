@@ -49,8 +49,8 @@
 			<div class="row gtr-200">
 				<div class="col-6 col-12-medium">
 					<ul class="pagination">
-						<li><a href="#one" class="button scrolly">Available</a></li>
-						<li><a href="{{url_for('unavailablevoucher', cashiername=data[0].cashiername)}}" class="button scrolly">Used/Expired</a></li>
+						<li><a href="{{url_for('uservoucher', cashiername=data[0].cashiername)}}" class="button scrolly">Available</a></li>
+						<li><a href="#one" class="button scrolly">Used/Expired</a></li>
 					</ul>
 				</div>
 			</div>
@@ -84,11 +84,13 @@
 						  </div>
 						</div>
 						<div class="claim-button-body">
-						  <a href="{{url_for('voucherqr', cashiername=vouchers.cashiername, voucherid=vouchers.id)}}" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Claim</button></a>
+							{% if vouchers.status == 0 %}
+								<a href="" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Expired</button></a>
+							{% else %}
+								<a href="" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Used</button></a>
+							{% endif %}
 						</div>
 					  </div>
-
-
 				{% endfor %}
 			</section>
 {% endblock %}

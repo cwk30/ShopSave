@@ -29,7 +29,7 @@
 </div>
 
 <!-- Banner -->
-	<section id="banner" class="major">
+	<!-- <section id="banner" class="major">
 		<div class="inner">
 			<header class="major">
 				<h1>Hi, {{ current_user.username }}</h1>
@@ -41,19 +41,20 @@
 				</ul>
 			</div>
 		</div>
-	</section>
+	</section> -->
 
 <!-- Main -->
 	<div id="main">
 		<!-- One -->
-			<section id="one">
-				<article>
+			<!-- <section id="one"> -->
+				<!-- <article> -->
 					<header class="major">
-						<h3>{{ data[0].cashiername}}, {{data[0].value }}</h3>
+						<h3>{{ data[0].cashiername}}, ${{data[0].value }}</h3>
 					</header>
-					<span class="image fit">
+					<div class="qr-parent">
 						<img src = "{{ url_for('static', filename='qr/voucherqr{}.jpeg'.format(data[0].id))}}" alt=""/> 
-					</span>
-				</article>
-			</section>
+					</div>
+				<!-- </article> -->
+			<!-- </section> -->
+	</div>
 {% endblock %}
