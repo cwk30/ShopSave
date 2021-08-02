@@ -163,6 +163,24 @@ def account():
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
+@app.route("/user/account", methods=['GET', 'POST'])
+@login_required 
+def account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.photo.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.photo = picture_file
+        current_user.address = form.address.data
+        current_user.contactno = form.contactno.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        current_user.password = hashed_password
+        db.session.commit()
+        flash('Your account info has been updated', 'success')
+        return redirect(url_for('account'))
+    #elif request.method == 'GET':
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
+    return render_template('userprofile.html', title="Profile", image_file=image_file, form=form)
 
 #TODO: once implemented make it login required
 @app.route('/cashier/scanQR')
