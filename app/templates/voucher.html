@@ -73,16 +73,26 @@
 
 				<!-- Contact -->
 				<form method="POST" action="">
+					{{ buy_form.hidden_tag() }}
 					<div class="fields">
-
 						<div class="field half">
 							{{ buy_form.quantity(class="form-control-label") }}
+							{% if buy_form.quantity.errors %}  
+								{{ buy_form.quantity(class="form-control form-control-lg is-invalid") }}
+								<div class="invalid-feedback">
+									{% for error in buy_form.quantity.errors %}
+										<span>{{ error }}</span> 
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ buy_form.quantity(class="form-control form-control-lg") }}
+							{% endif %}
 						</div>
+
 
 					</div>
 					<div class="actions" style="margin-left:65%;">
 						{{ buy_form.submit(class="btn btn-outline-info") }}
-						<!-- Send to url(uservoucherwallet) -->
 					</div>
 				</form>
 
