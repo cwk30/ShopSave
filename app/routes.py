@@ -1,3 +1,6 @@
+import secrets
+import os
+from PIL import Image 
 from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
 from flask import (render_template, jsonify, make_response, url_for, flash, redirect, request, abort)
@@ -27,7 +30,7 @@ def users():
     if userregister_form.validate_on_submit():
         print('valid')
         hashed_password = bcrypt.generate_password_hash(userregister_form.password.data).decode('utf-8')
-        user = User(username=userregister_form.username.data, password=hashed_password,email=userregister_form.email.data,cashier=0)
+        user = User(username=userregister_form.username.data, password=hashed_password,email=userregister_form.email.data,cashier=0,photo="img.png")
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
@@ -51,7 +54,7 @@ def cashier():
     if cashierregister_form.validate_on_submit():
         print('valid')
         hashed_password = bcrypt.generate_password_hash(cashierregister_form.password.data).decode('utf-8')
-        user = User(username=cashierregister_form.username.data, password=hashed_password,email=cashierregister_form.email.data,cashier=1)
+        user = User(username=cashierregister_form.username.data, password=hashed_password,email=cashierregister_form.email.data,cashier=1,photo="temp.jpg")
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
@@ -91,7 +94,15 @@ def uservoucherwallet():
 @app.route('/user/voucherwallet/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
 def uservoucher(cashiername):
-    vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1)
+    vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1).all()
+    # for i in range(len(vouchers_owned)):
+    #     if vouchers_owned[i].expirydate is None:
+    #         voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(vouchers_owned[i].expiry - 1)
+    #         vouchers_owned[i].expirydate = voucher_expiry_date.strftime("%d-%m-%Y")
+    #         db.session.commit()
+    for i in range(len(vouchers_owned)):
+        print(vouchers_owned[i].cashiername)
+        print(vouchers_owned[i].expirydate)
     return render_template('uservoucher.html', data=vouchers_owned)
 
 @app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
@@ -101,7 +112,7 @@ def unavailablevoucher(cashiername):
     if len(unavailable_vouchers) == 0 :
         return render_template('emptyvoucher.html', data=cashiername)
     else:
-        return render_template('uservoucher.html', data=unavailable_vouchers)
+        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers)
 
 @app.route('/user/voucherwallet/<string:cashiername>/<int:voucherid>',methods=['GET', 'POST'])
 @login_required 
@@ -139,7 +150,7 @@ def cashierhome():
 
 @app.route("/cashier/account", methods=['GET', 'POST'])
 @login_required 
-def account():
+def cashierprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
@@ -156,6 +167,24 @@ def account():
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
+@app.route("/user/account", methods=['GET', 'POST'])
+@login_required 
+def userprofile():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.photo.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.photo = picture_file
+        current_user.address = form.address.data
+        current_user.contactno = form.contactno.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        current_user.password = hashed_password
+        db.session.commit()
+        flash('Your account info has been updated', 'success')
+        return redirect(url_for('account'))
+    #elif request.method == 'GET':
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
+    return render_template('userprofile.html', title="Profile", image_file=image_file, form=form)
 
 #TODO: once implemented make it login required
 @app.route('/cashier/scanQR')
@@ -184,11 +213,11 @@ def voucherclaim(voucherid):
         reply={'status':'invalid voucher'}
         return make_response(jsonify(reply), 401)
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
-    if voucher.username==current_user.username and voucher.status==1: # check if the same user is doing the purchase
+    if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
-    elif voucher.username!=current_user.username: 
-        reply={'status':'wrong user'}
+    elif voucher.cashiername!=current_user.username: 
+        reply={'status':'wrong store'}
         return make_response(jsonify(reply),469)
     elif voucher.status==0:
         reply={'status':'voucher expired'}
@@ -197,3 +226,15 @@ def voucherclaim(voucherid):
         reply={'status':'voucher used alr'}
         return make_response(jsonify(reply),469)
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    f_name, f_ext = os.path.splitext(form_picture.filename) 
+    picture_fn = random_hex + f_ext 
+    picture_path = os.path.join(app.root_path, 'static/uploads', picture_fn) 
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    
+    i.save(picture_path)
+
+    return picture_fn

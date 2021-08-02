@@ -4253,6 +4253,14 @@ input {
   border: 1px solid transparent;
   width: 80%;
 }
+button:disabled,
+button[disabled],
+.greyed-button {
+  background-color: #4e5ba1;
+  color: #fff;
+  border: 1px solid transparent;
+  width: 80%;
+}
 .claim-button-body {
   display: flex;
   flex-direction: column;
@@ -4261,4 +4269,9 @@ input {
   margin: 10px;
 
   align-items: center;
+}
+
+.qr-parent{ display:flex;
+  justify-content:center;
+  align-items:center;
 }

@@ -29,17 +29,17 @@
 </div>
 
 <!-- Banner -->
-	<section id="banner" class="major">
+	<section id="banner">
 		<div class="inner">
 			<header class="major">
-				<h1>Hi, {{ current_user.username }}</h1>
+				<h1>Voucher Wallet</h1>
 			</header>
-			<div class="content">
-				<p>Check out the available vouchers below!</p>
+			<!-- <div class="content">
+				<p>For more vouchers here!</p>
 				<ul class="actions">
 					<li><a href="{{url_for('userhome')}}" class="button next scrolly">Start saving</a></li>
 				</ul>
-			</div>
+			</div> -->
 		</div>
 	</section>
 
@@ -80,7 +80,7 @@
 						  <div class="voucher-content">
 							<div class="voucher-title">{{ vouchers.cashiername }}</div>
 							<div class="voucher-content">$ <span>{{ vouchers.value }}</span></div>
-							<div class="voucher-expiry">Valid till 30 April 2021</div>
+							<div class="voucher-expiry">Valid till {{ vouchers.expirydate }}</div>
 						  </div>
 						</div>
 						<div class="claim-button-body">
