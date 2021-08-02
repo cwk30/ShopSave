@@ -33,7 +33,7 @@ def users():
     if userregister_form.validate_on_submit():
         print('valid')
         hashed_password = bcrypt.generate_password_hash(userregister_form.password.data).decode('utf-8')
-        user = User(username=userregister_form.username.data, password=hashed_password,email=userregister_form.email.data,cashier=0)
+        user = User(username=userregister_form.username.data, password=hashed_password,email=userregister_form.email.data,cashier=0,photo="img.png")
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
@@ -57,7 +57,7 @@ def cashier():
     if cashierregister_form.validate_on_submit():
         print('valid')
         hashed_password = bcrypt.generate_password_hash(cashierregister_form.password.data).decode('utf-8')
-        user = User(username=cashierregister_form.username.data, password=hashed_password,email=cashierregister_form.email.data,cashier=1)
+        user = User(username=cashierregister_form.username.data, password=hashed_password,email=cashierregister_form.email.data,cashier=1,photo="temp.jpg")
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
@@ -160,8 +160,7 @@ def cashierprofile():
         flash('Your account info has been updated', 'success')
         return redirect(url_for('account'))
     #elif request.method == 'GET':
-    imgfile='uploads/'+ str(current_user.photo)
-    image_file = url_for('static', filename=imgfile) 
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
 @app.route("/user/account", methods=['GET', 'POST'])
@@ -180,7 +179,7 @@ def userprofile():
         flash('Your account info has been updated', 'success')
         return redirect(url_for('account'))
     #elif request.method == 'GET':
-    image_file = url_for('static', filename='uploads/' + str(current_user.photo)) 
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('userprofile.html', title="Profile", image_file=image_file, form=form)
 
 #TODO: once implemented make it login required
