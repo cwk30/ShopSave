@@ -1,3 +1,6 @@
+import secrets
+import os
+from PIL import Image 
 from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
 from flask import render_template
@@ -222,3 +225,15 @@ def voucherclaim(voucherid):
         reply={'status':'voucher used alr'}
         return make_response(jsonify(reply),469)
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    f_name, f_ext = os.path.splitext(form_picture.filename) 
+    picture_fn = random_hex + f_ext 
+    picture_path = os.path.join(app.root_path, 'static/uploads', picture_fn) 
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    
+    i.save(picture_path)
+
+    return picture_fn
