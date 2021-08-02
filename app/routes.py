@@ -209,11 +209,11 @@ def voucherclaim(voucherid):
         reply={'status':'invalid voucher'}
         return make_response(jsonify(reply), 401)
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
-    if voucher.username==current_user.username and voucher.status==1: # check if the same user is doing the purchase
+    if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
-    elif voucher.username!=current_user.username: 
-        reply={'status':'wrong user'}
+    elif voucher.cashiername!=current_user.username: 
+        reply={'status':'wrong store'}
         return make_response(jsonify(reply),469)
     elif voucher.status==0:
         reply={'status':'voucher expired'}
