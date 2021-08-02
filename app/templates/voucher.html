@@ -74,8 +74,8 @@
 				<!-- Contact -->
 				<form method="POST" action="">
 					{{ buy_form.hidden_tag() }}
-					<div class="row gtr-uniform">
-						<div class="col-6 col-12-xsmall">
+					<div class="fields">
+						<div class="field half">
 							{{ buy_form.quantity.label(class="form-control-label") }}
 							{% if buy_form.quantity.errors %}  
 								{{ buy_form.quantity(class="form-control form-control-lg is-invalid") }}
@@ -90,7 +90,7 @@
 						</div>
 					</div>
 				<ul class="actions">
-					{{ buy_form.quantity(class="btn btn-outline-info") }}
+					{{ buy_form.submit(class="btn btn-outline-info") }}
 				</ul>
 				</form>
 			</div>
