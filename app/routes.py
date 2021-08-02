@@ -160,7 +160,8 @@ def cashierprofile():
         flash('Your account info has been updated', 'success')
         return redirect(url_for('account'))
     #elif request.method == 'GET':
-    image_file = url_for('static', filename='uploads/' + str(current_user.photo)) 
+    imgfile='uploads/'+ str(current_user.photo)
+    image_file = url_for('static', filename=imgfile) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
 @app.route("/user/account", methods=['GET', 'POST'])
