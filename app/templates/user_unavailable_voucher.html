@@ -29,17 +29,17 @@
 </div>
 
 <!-- Banner -->
-	<section id="banner" class="major">
+	<section id="banner">
 		<div class="inner">
 			<header class="major">
-				<h1>Hi, {{ current_user.username }}</h1>
+				<h1>Voucher Wallet</h1>
 			</header>
-			<div class="content">
-				<p>Check out the available vouchers below!</p>
+			<!-- <div class="content">
+				<p>For more vouchers here!</p>
 				<ul class="actions">
 					<li><a href="{{url_for('userhome')}}" class="button next scrolly">Start saving</a></li>
 				</ul>
-			</div>
+			</div> -->
 		</div>
 	</section>
 
@@ -85,9 +85,9 @@
 						</div>
 						<div class="claim-button-body">
 							{% if vouchers.status == 0 %}
-								<a href="" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Expired</button></a>
+								<div style="width:100%; display: flex; justify-content:center;"><button disabled>Expired</button></div>
 							{% else %}
-								<a href="" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Used</button></a>
+								<div style="width:100%; display: flex; justify-content:center;"><button disabled>Used</button></div>
 							{% endif %}
 						</div>
 					  </div>
