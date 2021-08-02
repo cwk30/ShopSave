@@ -179,6 +179,9 @@ def logoutcashier():
 @login_required
 def voucherclaim(voucherid):
     voucher = Voucher.query.filter_by(id = voucherid).first()
+    if voucher is None: # to prevent exception in datetime.timedelta(voucher.expiry - 1)
+        reply={'status':'invalid voucher'}
+        return make_response(jsonify(reply), 401)
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
     if voucher.username==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
@@ -191,7 +194,5 @@ def voucherclaim(voucherid):
         return make_response(jsonify(reply),469)
     elif voucher.status==1:
         reply={'status':'voucher used alr'}
-        return make_response(jsonify(reply),469)        
-    else:
-        reply={'status':'invalid voucher'}
-        return make_response(jsonify(reply), 400)  
+        return make_response(jsonify(reply),469)
+
