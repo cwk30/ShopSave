@@ -4262,3 +4262,8 @@ input {
 
   align-items: center;
 }
+
+.qr-parent{ display:flex;
+  justify-content:center;
+  align-items:center;
+}
