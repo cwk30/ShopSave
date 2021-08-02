@@ -146,7 +146,7 @@ def cashierhome():
 
 @app.route("/cashier/account", methods=['GET', 'POST'])
 @login_required 
-def account():
+def cashierprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
@@ -165,7 +165,7 @@ def account():
 
 @app.route("/user/account", methods=['GET', 'POST'])
 @login_required 
-def account():
+def userprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
