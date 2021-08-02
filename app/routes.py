@@ -33,7 +33,7 @@ def users():
     if userregister_form.validate_on_submit():
         print('valid')
         hashed_password = bcrypt.generate_password_hash(userregister_form.password.data).decode('utf-8')
-        user = User(username=userregister_form.username.data, password=hashed_password,email=userregister_form.email.data,cashier=0)
+        user = User(username=userregister_form.username.data, password=hashed_password,email=userregister_form.email.data,cashier=0,photo="img.png")
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
@@ -57,7 +57,7 @@ def cashier():
     if cashierregister_form.validate_on_submit():
         print('valid')
         hashed_password = bcrypt.generate_password_hash(cashierregister_form.password.data).decode('utf-8')
-        user = User(username=cashierregister_form.username.data, password=hashed_password,email=cashierregister_form.email.data,cashier=1)
+        user = User(username=cashierregister_form.username.data, password=hashed_password,email=cashierregister_form.email.data,cashier=1,photo="temp.jpg")
         db.session.add(user)
         db.session.commit()
         flash("Your account has been created! You are now able to log in", 'success') 
@@ -146,7 +146,7 @@ def cashierhome():
 
 @app.route("/cashier/account", methods=['GET', 'POST'])
 @login_required 
-def account():
+def cashierprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
@@ -163,6 +163,24 @@ def account():
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
+@app.route("/user/account", methods=['GET', 'POST'])
+@login_required 
+def userprofile():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.photo.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.photo = picture_file
+        current_user.address = form.address.data
+        current_user.contactno = form.contactno.data
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        current_user.password = hashed_password
+        db.session.commit()
+        flash('Your account info has been updated', 'success')
+        return redirect(url_for('account'))
+    #elif request.method == 'GET':
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
+    return render_template('userprofile.html', title="Profile", image_file=image_file, form=form)
 
 #TODO: once implemented make it login required
 @app.route('/cashier/scanQR')
@@ -191,11 +209,11 @@ def voucherclaim(voucherid):
         reply={'status':'invalid voucher'}
         return make_response(jsonify(reply), 401)
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
-    if voucher.username==current_user.username and voucher.status==1: # check if the same user is doing the purchase
+    if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
-    elif voucher.username!=current_user.username: 
-        reply={'status':'wrong user'}
+    elif voucher.cashiername!=current_user.username: 
+        reply={'status':'wrong store'}
         return make_response(jsonify(reply),469)
     elif voucher.status==0:
         reply={'status':'voucher expired'}

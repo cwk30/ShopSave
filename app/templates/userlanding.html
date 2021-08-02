@@ -32,7 +32,7 @@
 	<section id="banner" class="major">
 		<div class="inner">
 			<header class="major">
-				<h1>Hi, {{ current_user.username }}</h1>
+				<h1>Hi, <a href="{{url_for('userprofile')}}">{{ current_user.username }}</a></h1>
 			</header>
 			<div class="content">
 				<p>Check out the available vouchers below!</p>

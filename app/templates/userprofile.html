@@ -1,0 +1,103 @@
+{% extends "cashierlayout.html" %}
+
+{% block content %}
+
+<!-- Nav -->
+<div class="container">
+	<input type="radio" name="s" id="home" checked>
+	<input type="radio" name="s" id="code">
+	<nav>
+		<ul>
+			<label class="home" for="home">
+				<a href="{{url_for('cashierhome')}}">
+					<i class='bx bx-home'></i>
+				</a>
+			</label>
+			<label class="code" for="code">
+				<a href="{{url_for('cashierqr')}}">
+					<i class='bx bx-qr'></i>
+				</a>
+			</label>
+		</ul>
+	</nav>
+</div>
+
+<!-- Main -->
+<div id="main" class="alt">
+
+	<!-- One -->
+		<section id="one">
+			<div class="inner">
+				<header class="major">
+					<h1>Update Profile</h1>
+				</header>
+				<span class="image left"><img src="{{ url_for('static', filename='uploads/'+current_user.photo)}}" alt="" /></span>
+				<br>
+				<form method="POST" action="">
+					{{ form.hidden_tag() }}
+					<div class="row gtr-uniform">
+						<div class="col-6 col-12-xsmall">
+							{{ form.password.label(class="form-control-label") }}
+							{% if form.password.errors %}  
+								{{ form.password(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.password.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ form.password(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+						<div class="col-6 col-12-xsmall">
+							{{ form.confirm_password.label(class="form-control-label") }}
+							{% if form.confirm_password.errors %} 
+								{{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+								<div class="invalid-feedback">
+									{% for error in form.confirm_password.errors %}
+										<span>{{ error }}</span> 
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.confirm_password(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+
+						<div class="col-6 col-12-xsmall">
+							{{ form.contactno.label(class="form-control-label") }}
+							{% if form.contactno.errors %}  
+								{{ form.contactno(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.contactno.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ form.contactno(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+						<div class="col-6 col-12-xsmall">
+							{{ form.photo.label(class="form-control-label") }}
+							{% if form.photo.errors %}  
+								{{ form.photo(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.photo.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ form.photo(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+					</div>
+				<ul class="actions">
+					{{ form.submit(class="btn btn-outline-info") }}
+				</ul>
+			</div>
+		</section>
+
+</div>
+
+
+
+{% endblock %}
