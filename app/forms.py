@@ -51,7 +51,7 @@ class UpdateAccountForm(FlaskForm):
     password = PasswordField('Password*', validators=[Required()]) 
     confirm_password = PasswordField('Confirm Password*', validators=[Required(), EqualTo('password')])
     photo = FileField('Upload Photo', validators=[FileAllowed(['jpg', 'png'])])
-    contactno = IntegerField("Contact No.", validators=[])
+    contactno = IntegerField("Contact No.*", validators=[])
     
     submit = SubmitField('Update') 
 
