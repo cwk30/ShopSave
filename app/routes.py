@@ -302,27 +302,27 @@ def logoutcashier():
     return redirect(url_for('cashier'))
 
 
-
+#todos:should we check if the login user is a user and not a cashier?
 @app.route("/cashier/scanQR/<int:voucherid>", methods=['POST'])
 @login_required
 def voucherclaim(voucherid):
     voucher = Voucher.query.filter_by(id = voucherid).first()
     if voucher is None: # to prevent exception in datetime.timedelta(voucher.expiry - 1)
-        reply={'status':'invalid voucher'}
+        reply={'status':'invalid voucher', 'cashiername':current_user.username}
         return make_response(jsonify(reply), 401)
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
     if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
     elif voucher.cashiername!=current_user.username: 
-        reply={'status':'wrong store'}
-        return make_response(jsonify(reply),469)
-    elif voucher.status==0:
-        reply={'status':'voucher expired'}
-        return make_response(jsonify(reply),469)
+        reply={'status':'wrong store', 'cashiername' :current_user.username}
+        return make_response(jsonify(reply), 469)
+    elif voucher.status == 0:
+        reply={'status':'voucher expired','cashiername' :current_user.username}
+        return make_response(jsonify(reply), 469)
     elif voucher.status==1:
-        reply={'status':'voucher used alr'}
-        return make_response(jsonify(reply),469)
+        reply={'status':'voucher used alr', 'cashiername' :current_user.username}
+        return make_response(jsonify(reply), 469)
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)

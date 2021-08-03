@@ -3,25 +3,6 @@
 {% block content %}
 
 <!-- Nav -->
-<script>
-	function triggerButton(id) {
-		alert(id);
-		document.getElementById(id).click();
-	}
-	async function makeApiCall(cashierName) {
-		console.log(cashierName);
-		const endpoint = '/user/voucherwallet/' + cashierName;
-		  const response = await fetch(endpoint, {
-		  method: 'POST',
-		  headers: {
-		  'Content-Type': 'application/json'
-		  }
-		});
-		console.log(response);
-		json = await response;
-		console.log(json);
-	}
-</script>
 <div class="container">
 	<input type="radio" name="s" id="home">
     <input type="radio" name="s" id="wallet" checked>
