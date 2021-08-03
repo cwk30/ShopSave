@@ -4,24 +4,29 @@
 
 <!-- Nav -->
 <div class="container">
-	<input type="radio" name="s" id="home" checked>
-	<input type="radio" name="s" id="code">
+	<input type="radio" name="s" id="home">
+    <input type="radio" name="s" id="wallet">
+    <input type="radio" name="s" id="code" checked>
 	<nav>
 		<ul>
 			<label class="home" for="home">
-				<a href="{{url_for('cashierhome')}}">
+				<a href="{{url_for('userhome')}}">
 					<i class='bx bx-home'></i>
 				</a>
 			</label>
+			<label class="wallet" for="wallet">
+				<a href="{{url_for('uservoucherwallet')}}">
+					<i class='bx bx-wallet'></i>
+				</a>
+			</label>
 			<label class="code" for="code">
-				<a href="{{url_for('cashierqr')}}">
-					<i class='bx bx-qr'></i>
+				<a href="{{url_for('userprofile')}}">
+					<i class='bx bx-user'></i>
 				</a>
 			</label>
 		</ul>
 	</nav>
 </div>
-
 <!-- Main -->
 <div id="main" class="alt">
 

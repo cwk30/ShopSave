@@ -4,8 +4,10 @@
 
 <!-- Nav -->
 <div class="container">
-	<input type="radio" name="s" id="home" checked>
+	<input type="radio" name="s" id="home">
 	<input type="radio" name="s" id="code">
+	<input type="radio" name="s" id="profile" checked>
+
 	<nav>
 		<ul>
 			<label class="home" for="home">
@@ -16,6 +18,11 @@
 			<label class="code" for="code">
 				<a href="{{url_for('cashierqr')}}">
 					<i class='bx bx-qr'></i>
+				</a>
+			</label>
+			<label class="profile" for="profile">
+				<a href="{{url_for('cashierprofile')}}">
+					<i class='bx bx-user'></i>
 				</a>
 			</label>
 		</ul>
