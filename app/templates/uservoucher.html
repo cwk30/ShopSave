@@ -10,7 +10,6 @@
 		alert(document.getElementById(id).value);
 	}
 	async function makeApiCall(voucherId) {
-
 		const endpoint = '/user/voucherwallet/' + voucherId;
 		const cashierName = document.getElementById(voucherId).value;
 		const response = await fetch(endpoint, {
