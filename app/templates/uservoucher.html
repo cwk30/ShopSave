@@ -5,11 +5,13 @@
 <!-- Nav -->
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-	async function makeQrAuthenticationAPIcall() {
+	function dummy(id) {
+		alert(id);
+		alert(document.getElementById(id).value);
+	}
+	async function makeApiCall(voucherId) {
 		console.log('api resquest made');
-		const cashiername = document.getElementById("searchTxt").value;
-		const voucherId = document.getElementById("searchTxt").value;
-		const endpoint = '/user/voucherwallet/' + cashiername + "/" + voucherId;
+		const endpoint = '/user/voucherwallet/' + voucherId;
 		  const response = await fetch(endpoint, {
 		  method: 'POST',
 		  headers: {
@@ -19,23 +21,21 @@
 		if (response.status === 200) {
 		const jsonResponse = await response.json(); // check if we need to await again
 		  console.log(jsonResponse);
-	
-		return jsonResponse;
+			showQr(jsonResponse.filePath);
 		} else {
-		console.log(response);
-		console.log(response.status, response.statusText);
-		const jsonResponse = await response.json(); // check if we need to await again
-		console.log(jsonResponse);
-	
+			console.log(response);
+			console.log(response.status, response.statusText);
+			const jsonResponse = await response.json(); // check if we need to await again
+			console.log(jsonResponse);
 		}
 	  }
-	function dummyApi() {
+	function showQr(voucherPath) { // need to align the path 
 		let timerInterval
+		console.log(voucherPath);
 		Swal.fire({
-		html: '<img class="image fit" src="../static/qr/voucherqr1.jpeg" /><div style="margin-top:-10px;"> Close in <b style="color:black;"></b></div>',
+		html: `<img class="image fit" src="/${voucherPath}" /><div style="margin-top:-10px;"> Close in <b style="color:black;"></b></div>`,
 		title: 'Scan QR Code',
-		timer: 60000,
-		confirmButtonText: "guan yin ma",
+		timer: 180000,
 		timerProgressBar: false,
 		didOpen: () => {
 		  Swal.showLoading()
@@ -135,7 +135,6 @@
 							<p>{{ vouchers.cashiername }}</p>
 						</header>
 					</article> -->
-
 					<div class="voucher-card">
 						<div class="voucher-main">
 						  <div class="voucher-co-img">
@@ -152,10 +151,9 @@
 						  </div>
 						</div>
 						<div class="claim-button-body">
-						  <a href="{{url_for('voucherqr', cashiername=vouchers.cashiername, voucherid=vouchers.id)}}" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Claim</button></a>
+							<button value = {{vouchers.cashiername}} id = {{ vouchers.id }}  style="width:100%; display: flex; justify-content:center;" class="claim-button" onclick="makeApiCall(this.id)">Claim</button>
 						</div>
 					  </div>
-					  <button onclick="dummyApi()">test button</button>
 
 
 				{% endfor %}
