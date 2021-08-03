@@ -1,4 +1,4 @@
-{% extends "cashierlayout.html" %}
+{% extends "userlayout.html" %}
 
 {% block content %}
 
@@ -38,7 +38,7 @@
 				</header>
 				<span class="image left"><img src="{{ url_for('static', filename='uploads/'+current_user.photo)}}" alt="" /></span>
 				<br>
-				<form method="POST" action="">
+				<form method="POST" action="" enctype="multipart/form-data">
 					{{ form.hidden_tag() }}
 					<div class="row gtr-uniform">
 						<div class="col-6 col-12-xsmall">

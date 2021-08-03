@@ -254,28 +254,20 @@ def cashierhome():
 @login_required 
 def cashierprofile():
     form = UpdateAccountForm()
-    files = os.listdir(app.config['UPLOAD_PATH'])
     if form.validate_on_submit():
-        print('hi')
-        uploaded_file = request.files['file']
-        filename = secure_filename(uploaded_file.filename)
-        print(filename)
-        if filename != '':
-            file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
-                    file_ext != validate_image(uploaded_file.stream):
-                abort(400)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+        if form.photo.data:
+            picture_file = save_picture(form.photo.data)
+            current_user.photo = picture_file
         current_user.address = form.address.data
         current_user.contactno = form.contactno.data
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         current_user.password = hashed_password
         db.session.commit()
         flash('Your account info has been updated', 'success')
-        return redirect(url_for('cashierprofile'))
+        return redirect(url_for('userprofile'))
     #elif request.method == 'GET':
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
-    return render_template('cashierprofile.html', title="Profile", files=files, form=form)
+    return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
 @app.route("/user/account", methods=['GET', 'POST'])
 @login_required 
@@ -283,7 +275,7 @@ def userprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
-            picture_file = save_picture(form.picture.data)
+            picture_file = save_picture(form.photo.data)
             current_user.photo = picture_file
         current_user.address = form.address.data
         current_user.contactno = form.contactno.data
