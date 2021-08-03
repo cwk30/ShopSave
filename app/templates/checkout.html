@@ -1,0 +1,64 @@
+{% extends "landinglayout.html" %}
+
+{% block content %}
+<!-- Header -->
+	<header id="header">
+		<div class="content">
+			<h1>Checkout</h1>
+			<form method="POST" action="">
+				{{ coForm.hidden_tag() }}
+				<div class="fields">
+					<div class="field half">
+						{% if errorMessage %}
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[0] }}</span> 
+							</div>
+							{{ coForm.nameOnCard.label(class="form-control-label") }}
+							{{ coForm.nameOnCard(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[1] }}</span> 
+							</div>
+							{{ coForm.creditCardNumber.label(class="form-control-label") }}
+							{{ coForm.creditCardNumber(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[2] }}</span> 
+							</div>
+							{{ coForm.expirationMonth.label(class="form-control-label") }}
+							{{ coForm.expirationMonth(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[3] }}</span> 
+							</div>
+							{{ coForm.expirationYear.label(class="form-control-label") }}
+							{{ coForm.expirationYear(class="form-control form-control-lg is-invalid") }}							
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[4] }}</span> 
+							</div>
+							{{ coForm.cvv.label(class="form-control-label") }}
+							{{ coForm.cvv(class="form-control form-control-lg is-invalid") }}
+
+						{% else %}
+							{{ coForm.nameOnCard.label(class="form-control-label") }}
+							{{ coForm.nameOnCard(class="form-control form-control-lg") }}
+
+							{{ coForm.creditCardNumber.label(class="form-control-label") }}
+							{{ coForm.creditCardNumber(class="form-control form-control-lg") }}
+
+							{{ coForm.expirationMonth.label(class="form-control-label") }}
+							{{ coForm.expirationMonth(class="form-control form-control-lg") }}
+
+							{{ coForm.expirationYear.label(class="form-control-label") }}
+							{{ coForm.expirationYear(class="form-control form-control-lg") }}							
+
+							{{ coForm.cvv.label(class="form-control-label") }}
+							{{ coForm.cvv(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+				</div>
+			<ul class="actions">
+				{{ coForm.submit(class="btn btn-outline-info") }}
+			</ul>
+			</form>
+
+		</div>
+	</header>
+{% endblock %}
