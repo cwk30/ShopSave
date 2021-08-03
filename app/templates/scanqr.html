@@ -55,7 +55,9 @@
 										<header class="major">
 											<h1>Scan QR</h1>
 										</header>
-										<div id="qr-reader" style="max-width: 90%"></div>
+										<div id="qr-reader" style="width:100%">
+
+										</div>
 									</div>
 								</section>
 
@@ -86,8 +88,10 @@
 <script src="{{url_for('static', filename='assets/js/util.js')}}"></script>
 <script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
 <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 <script type="text/javascript">
 
 
@@ -103,24 +107,69 @@ async function makeQrAuthenticationAPIcall(qrId) {
   if (response.status === 200) {
 	const jsonResponse = await response.json(); // check if we need to await again
   	console.log(jsonResponse);
+	toastr.success('Voucher of $' + jsonResponse.value + ' has been claimed.');
 	return jsonResponse;
   } else {
 	console.log(response);
 	console.log(response.status, response.statusText);
+	const jsonResponse = await response.json(); // check if we need to await again
+	console.log(jsonResponse);
+	toastr.error(jsonResponse.status);
   }
 }
+//TODOS: remove dummy function for api testing
 
-
+function validCall() {
+	makeQrAuthenticationAPIcall(1);
+}
+function inValidCall() {
+	makeQrAuthenticationAPIcall(2);
+}
+$( document ).ready(function() {
 async function onScanSuccess(decodedText, decodedResult) {
-	window.alert('successful scan');
+	toastr.info('Validating QR Code');
     console.log(`Code scanned = ${decodedText}`, decodedResult);
 	await makeQrAuthenticationAPIcall(decodedText);
 }
 
-
 var html5QrcodeScanner = new Html5QrcodeScanner(
 	"qr-reader", { fps: 10, qrbox: 250 });
 html5QrcodeScanner.render(onScanSuccess );
+
+var elements = $('a');
+
+// go through the elements and find the one with the value
+elements.each(function(index, domElement) {
+    var $element = $(domElement);
+
+    // does the element have the text we're looking for?
+    if ($element.text() === "Code Scanner") {
+        $element.hide();
+		return false; 
+    }
+});
+
+function hideButton(buttonName) {
+	var elements = $('button');
+	elements.each(function(index, domElement) {
+		var $element = $(domElement);
+		if ($element.text() === buttonName) {
+			$element.click(); // to trigger the other element
+			$element.hide();
+			return false; 
+		}
+	});
+}
+hideButton("Request Camera Permissions");
+document.getElementById('qr-reader__status_span').style.display = "none";
+
+var delayInMilliseconds = 820; //1 second
+
+setTimeout(function() {
+	hideButton("Start Scanning")
+}, delayInMilliseconds);
+
+});
 
 </script>
 </body>
