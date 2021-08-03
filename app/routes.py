@@ -13,6 +13,14 @@ from flask import request
 import qrcode
 import datetime
 
+def validate_image(stream):
+    header = stream.read(512)  # 512 bytes should be enough for a header check
+    stream.seek(0)  # reset stream pointer
+    format = imghdr.what(None, header)
+    if not format:
+        return None
+    return '.' + (format if format != 'jpeg' else 'jpg')
+
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     return redirect('/')
@@ -246,11 +254,16 @@ def cashierhome():
 @login_required 
 def cashierprofile():
     form = UpdateAccountForm()
+    files = os.listdir(app.config['UPLOAD_PATH'])
     if form.validate_on_submit():
-        if form.photo.data:
-            print('photo')
-            picture_file = save_picture(form.picture.data)
-            current_user.photo = picture_file
+        uploaded_file = request.files['file']
+        filename = secure_filename(uploaded_file.filename)
+        if filename != '':
+            file_ext = os.path.splitext(filename)[1]
+            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
+                    file_ext != validate_image(uploaded_file.stream):
+                abort(400)
+            uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
         current_user.address = form.address.data
         current_user.contactno = form.contactno.data
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -260,7 +273,7 @@ def cashierprofile():
         return redirect(url_for('cashierprofile'))
     #elif request.method == 'GET':
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
-    return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
+    return render_template('cashierprofile.html', title="Profile", files=files, form=form)
 
 @app.route("/user/account", methods=['GET', 'POST'])
 @login_required 
