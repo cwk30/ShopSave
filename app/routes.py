@@ -17,6 +17,10 @@ import datetime
 def unauthorized_callback():
     return redirect('/')
 
+@app.route("/trailer")
+def trailer():
+    return redirect('https://www.youtube.com/watch?v=LGkUW5cUPz8')
+
 @app.route('/',methods=['GET', 'POST'])
 def landing():
     return render_template('index.html')
@@ -221,6 +225,8 @@ def logoutuser():
 def logoutcashier():
     logout_user()
     return redirect(url_for('cashier'))
+
+
 
 @app.route("/cashier/scanQR/<int:voucherid>", methods=['POST'])
 @login_required
