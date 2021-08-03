@@ -10,18 +10,19 @@
 		alert(document.getElementById(id).value);
 	}
 	async function makeApiCall(voucherId) {
-		console.log('api resquest made');
+
 		const endpoint = '/user/voucherwallet/' + voucherId;
-		  const response = await fetch(endpoint, {
-		  method: 'POST',
-		  headers: {
+		const cashierName = document.getElementById(voucherId).value;
+		const response = await fetch(endpoint, {
+		method: 'POST',
+		headers: {
 			'Content-Type': 'application/json'
 		  }
 		});
 		if (response.status === 200) {
 		const jsonResponse = await response.json(); // check if we need to await again
 		  console.log(jsonResponse);
-			showQr(jsonResponse.filePath);
+			showQr(jsonResponse.filePath, cashierName);
 		} else {
 			console.log(response);
 			console.log(response.status, response.statusText);
@@ -29,12 +30,11 @@
 			console.log(jsonResponse);
 		}
 	  }
-	function showQr(voucherPath) { // need to align the path 
+	function showQr(voucherPath, cashierName) { // need to align the path 
 		let timerInterval
-		console.log(voucherPath);
 		Swal.fire({
 		html: `<img class="image fit" src="/${voucherPath}" /><div style="margin-top:-10px;"> Close in <b style="color:black;"></b></div>`,
-		title: 'Scan QR Code',
+		title: `<b style="color:black;">${cashierName}</b>`,
 		timer: 180000,
 		timerProgressBar: false,
 		didOpen: () => {
