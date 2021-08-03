@@ -20,8 +20,8 @@
 				</a>
 			</label>
 			<label class="code" for="code">
-				<a href="{{url_for('userQR')}}">
-					<i class='bx bx-qr'></i>
+				<a href="{{url_for('userprofile')}}">
+					<i class='bx bx-user'></i>
 				</a>
 			</label>
 		</ul>
@@ -70,11 +70,11 @@
 						  <div class="voucher-content">
 							<div class="voucher-title">{{ vouchers.cashiername }}</div>
 							<div class="voucher-content">$ <span>{{ vouchers.value }}</span></div>
-							<div class="voucher-expiry">Valid till 30 April 2021</div>
+							<div class="voucher-expiry">Valid for {{ vouchers.expirydur }} days</div>
 						  </div>
 						</div>
 						<div class="claim-button-body">
-						  <a href="{{url_for('voucher', voucherid=vouchers.id)}}" style="width:100%; display: flex; justify-content:center;"><button class="claim-button">Claim</button></a>
+						  <a href="{{url_for('voucher', voucherid=vouchers.id)}}" style="width:100%; display: flex; justify-content:center;"><button class="claim-button"><strike style="font-size:5vw">${{ vouchers.value }}</strike> <span style="font-size:8vw">${{ vouchers.cost }}</span></button></a>
 						</div>
 					  </div>
 

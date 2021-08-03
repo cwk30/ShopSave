@@ -1,12 +1,9 @@
+import secrets
+import os
+from PIL import Image 
 from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
-from flask import render_template
-from flask import jsonify, make_response
-from flask import url_for 
-from flask import flash 
-from flask import redirect
-from flask import request, abort
-from flask import jsonify
+from flask import (render_template, jsonify, make_response, url_for, flash, redirect, request, abort)
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
@@ -76,9 +73,12 @@ def cashier():
 @login_required 
 def userhome():
     data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
+    # data = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()  
+    # print(data)
     return render_template('userlanding.html', data=data)
+    # return render_template('test.html', data=data)
 
-@app.route('/user/voucherwallet')
+@app.route('/user/voucherwallet', methods=['GET', 'POST'])
 @login_required
 def uservoucherwallet():
     voucher_data = Voucher.query.filter_by(username = current_user.username).all()
@@ -139,15 +139,17 @@ def voucherqr(voucherid):
 #     print(data)
 #     return jsonify({'Voucher list': data.get_data()})
 
-@app.route('/voucher/<int:voucherid>')
+@app.route('/voucher/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucher(voucherid):
     buy_form=BuyForm()
+    if buy_form.validate_on_submit():
+        flash("BUY")
+        return redirect(url_for("uservoucherwallet"))
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
     return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form)
 
 @app.route('/elements')
-@login_required
 def elements():
     return render_template('elements.html')
 
@@ -159,7 +161,9 @@ def userQR():
 @app.route('/cashier/home',methods=['GET', 'POST'])
 @login_required
 def cashierhome():
-    return render_template('cashierlanding.html')
+    data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
+
+    return render_template('cashierlanding.html', data=data)
 
 @app.route("/cashier/account", methods=['GET', 'POST'])
 @login_required 
@@ -239,3 +243,15 @@ def voucherclaim(voucherid):
         reply={'status':'voucher used alr'}
         return make_response(jsonify(reply),469)
 
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    f_name, f_ext = os.path.splitext(form_picture.filename) 
+    picture_fn = random_hex + f_ext 
+    picture_path = os.path.join(app.root_path, 'static/uploads', picture_fn) 
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    
+    i.save(picture_path)
+
+    return picture_fn

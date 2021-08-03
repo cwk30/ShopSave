@@ -20,8 +20,8 @@
 				</a>
 			</label>
 			<label class="code" for="code">
-				<a href="{{url_for('userQR')}}">
-					<i class='bx bx-qr'></i>
+				<a href="{{url_for('userprofile')}}">
+					<i class='bx bx-user'></i>
 				</a>
 			</label>
 		</ul>
@@ -73,28 +73,30 @@
 
 				<!-- Contact -->
 				<form method="POST" action="">
+					{{ buy_form.hidden_tag() }}
 					<div class="fields">
-
 						<div class="field half">
-							{{ buy_form.quantity(class="form-control-label") }}
+							{{ buy_form.quantity.label(class="form-control-label") }}
+							{% if buy_form.quantity.errors %}  
+								{{ buy_form.quantity(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in buy_form.quantity.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ buy_form.quantity(class="form-control form-control-lg") }}
+							{% endif %}
 						</div>
-
 					</div>
-					<div class="actions" style="margin-left:65%;">
-						{{ buy_form.submit(class="btn btn-outline-info") }}
-						<!-- Send to url(uservoucherwallet) -->
-					</div>
+				<ul class="actions">
+					{{ buy_form.submit(class="btn btn-outline-info") }}
+				</ul>
 				</form>
-
-
 			</div>
+		
+
+
 {% endblock %}
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+
 
