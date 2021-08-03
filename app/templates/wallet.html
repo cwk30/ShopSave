@@ -60,4 +60,23 @@
 					</article>
 				{% endfor %}
 			</section>
+	</div>
+
+<!-- trying -->
+<ul id="cards">
+	{% for voucher in data %}
+		<li class="card">
+  			<div style="margin-left:-10px;" class="card__content">
+				<div>
+	  				<h2>{{ voucher }}</h2>
+	  				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+	  				<p><a href="#top" class="btn btn--accent">Read more</a></p>
+				</div>
+				<figure>
+	  			<img src="https://codyhouse.co/demo-tutorials/stacking-cards/assets/img/img-2.jpg" alt="Image description">
+				</figure>
+  			</div>
+		</li>
+		{% endfor %}	
+</ul>
 {% endblock %}
