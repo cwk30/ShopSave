@@ -3,6 +3,25 @@
 {% block content %}
 
 <!-- Nav -->
+<script>
+	function triggerButton(id) {
+		alert(id);
+		document.getElementById(id).click();
+	}
+	async function makeApiCall(cashierName) {
+		console.log(cashierName);
+		const endpoint = '/user/voucherwallet/' + cashierName;
+		  const response = await fetch(endpoint, {
+		  method: 'POST',
+		  headers: {
+		  'Content-Type': 'application/json'
+		  }
+		});
+		console.log(response);
+		json = await response;
+		console.log(json);
+	}
+</script>
 <div class="container">
 	<input type="radio" name="s" id="home">
     <input type="radio" name="s" id="wallet" checked>
@@ -60,4 +79,23 @@
 					</article>
 				{% endfor %}
 			</section>
+	</div>
+
+<!-- trying -->
+<ul id="cards">
+	{% for key, value in data.items() %}
+		<li class="card">
+			<div style="margin: 10px 3.5px 0 -20px;" class="card__content">
+				<div>
+					<h2 span style="color:#232B47;">{{ key }}</span></h2>
+					<p>Number of vouchers: {{ value }}</p>
+					<p id={{key}}><a style="display:block;" href="{{url_for('uservoucher', cashiername=key)}}" class="btn btn--accent">{{ key }}</a><p>
+				</div>
+				<figure>
+				<img src="https://codyhouse.co/demo-tutorials/stacking-cards/assets/img/img-2.jpg" alt="Image description">
+				</figure>
+			</div>
+		</li>
+	{% endfor %}	
+</ul>
 {% endblock %}

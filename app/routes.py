@@ -82,14 +82,21 @@ def userhome():
 @login_required
 def uservoucherwallet():
     voucher_data = Voucher.query.filter_by(username = current_user.username).all()
-    distinct_cashiers = []
+    # distinct_cashiers = []
+    # for i in range(len(voucher_data)):
+    #     if voucher_data[i].cashiername not in distinct_cashiers:
+    #         distinct_cashiers.append(voucher_data[i].cashiername)
+    unique_cashier_freq = {}
     for i in range(len(voucher_data)):
-        if voucher_data[i].cashiername not in distinct_cashiers:
-            distinct_cashiers.append(voucher_data[i].cashiername)
-    if len(distinct_cashiers) == 0 :
+        if voucher_data[i].cashiername not in unique_cashier_freq:
+            unique_cashier_freq[voucher_data[i].cashiername] = 1
+        else:
+            unique_cashier_freq[voucher_data[i].cashiername] += 1
+    # print(unique_cashier_freq)
+    if len(unique_cashier_freq) == 0 :
         return render_template('emptywallet.html')
     else:
-        return render_template('wallet.html', data=distinct_cashiers)
+        return render_template('wallet.html', data=unique_cashier_freq)
 
 @app.route('/user/voucherwallet/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
@@ -98,11 +105,9 @@ def uservoucher(cashiername):
     # for i in range(len(vouchers_owned)):
     #     if vouchers_owned[i].expirydate is None:
     #         voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(vouchers_owned[i].expiry - 1)
-    #         vouchers_owned[i].expirydate = voucher_expiry_date.strftime("%d-%m-%Y")
+    #         vouchers_owned[i].expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
     #         db.session.commit()
-    for i in range(len(vouchers_owned)):
-        print(vouchers_owned[i].cashiername)
-        print(vouchers_owned[i].expirydate)
+    # print('called')
     return render_template('uservoucher.html', data=vouchers_owned)
 
 @app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
@@ -114,13 +119,25 @@ def unavailablevoucher(cashiername):
     else:
         return render_template('user_unavailable_voucher.html', data=unavailable_vouchers)
 
-@app.route('/user/voucherwallet/<string:cashiername>/<int:voucherid>',methods=['GET', 'POST'])
+@app.route('/user/voucherwallet/<int:voucherid>',methods=['GET', 'POST'])
 @login_required 
-def voucherqr(cashiername, voucherid):
+def voucherqr(voucherid):
     voucher = Voucher.query.filter_by(id = voucherid)
     qr = qrcode.make('{}'.format(str(voucherid)))
-    qr.save('app/static/qr/voucherqr{}.jpeg'.format(str(voucherid)), "JPEG")
-    return render_template('voucherqr.html', data=voucher)
+    filePath = 'static/qr/voucherqr{}.jpeg'.format(str(voucherid))
+    qr.save("app/" + filePath, "JPEG")
+    reply={'filePath': filePath}
+    return make_response(jsonify(reply), 200)
+# @app.route('/user/voucherwallet/<string:cashiername>/testing',methods=['GET'])
+# @login_required 
+# def testing(cashiername):
+#     data = db.session.query(Voucher, User)\
+#         .filter(
+#         (Voucher.username == current_user.username, Voucher.cashiername==cashiername, Voucher.status == 1)
+#         & (Voucher.username==User.username)
+#         ).all()
+#     print(data)
+#     return jsonify({'Voucher list': data.get_data()})
 
 @app.route('/voucher/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
@@ -139,7 +156,7 @@ def elements():
 @app.route('/user/userQR')
 @login_required
 def userQR():
-    return render_template('notyet.html')
+    return render_template('anythinglah.html')
 
 @app.route('/cashier/home',methods=['GET', 'POST'])
 @login_required
