@@ -1,3 +1,4 @@
+http://ec2-13-250-36-160.ap-southeast-1.compute.amazonaws.com:5000/
 # ShopSave
 
 hustle for the win
