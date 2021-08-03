@@ -209,14 +209,21 @@ def checkout():
         if error:
             return render_template('checkout.html', coForm=coForm, errorMessage=errorMessage)
         
-        vouchercat = Vouchercat.query.filter_by(id=voucherId)
-
-        voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(vouchers_owned[i].expiry - 1)
-        vouchers_owned[i].expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
-        voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=expiry, value=value, transfer=transfer, status=status, expirydate=expirydate)
-        db.session.add(voucher)
+        vouchercat = Vouchercat.query.filter_by(id=voucherId).first()
+        today = datetime.date.today()
+        epoch_day = datetime.datetime(today.year,today.month,today.day) - datetime.datetime(1970,1,1) + datetime.timedelta(days=vouchercat.expirydur+1)
+        voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(epoch_day.days - 1)
+        expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
+        # voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate)
+        
+        vouchercat.quantity = vouchercat.quantity - quantity
+        vouchercat.sold = vouchercat.sold + quantity
+        
+        for i in range(quantity):
+            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate))
         db.session.commit()
-        return render_template('test.html', data="buyyyy")
+        # return render_template('test.html', data=quantity)
+        return redirect(url_for('uservoucherwallet'))
     return render_template('checkout.html', coForm=coForm)
 
 @app.route('/elements')
