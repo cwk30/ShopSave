@@ -3,11 +3,11 @@ import os
 from PIL import Image 
 from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
-from flask import (render_template, jsonify, make_response, url_for, flash, redirect, request, abort)
+from flask import (render_template, jsonify, make_response, url_for, flash, redirect, request, abort, session)
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_
 from flask_sqlalchemy import Pagination
-from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm,CashierLoginForm)
+from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
 from app.models import (User, Voucher, Vouchercat)
 from flask import request
 import qrcode
@@ -40,6 +40,7 @@ def users():
         if user and bcrypt.check_password_hash(user.password, userlogin_form.password.data) and user.cashier==0:
             login_user(user, remember=userlogin_form.remember.data)
             next_page = request.args.get('next')
+            session["username"]=user.username
             return redirect(url_for('userhome'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
@@ -127,10 +128,64 @@ def voucherqr(cashiername, voucherid):
 def voucher(voucherid):
     buy_form=BuyForm()
     if buy_form.validate_on_submit():
-        flash("BUY")
-        return redirect(url_for("uservoucherwallet"))
+        voucherData = Vouchercat.query.filter_by(id=voucherid).first()       
+        quantity = buy_form.quantity.data
+        if quantity <= voucherData.quantity:
+            session['voucherID'] = voucherData.id
+            session['quantity'] = quantity
+            return redirect(url_for('checkout'))
+        else:
+            errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
+            return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
     return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form)
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    voucherId = session['voucherID']
+    quantity = session['quantity']
+    coForm = CheckoutForm()
+    if coForm.validate_on_submit():
+        errorMessage=[]
+        error = False
+        name=coForm.nameOnCard.data
+        errorMessage.append("")
+        creditCardNumber=coForm.creditCardNumber.data
+        if len(str(creditCardNumber))==16 and isinstance(creditCardNumber,int):
+            errorMessage.append("")
+        else:
+            errorMessage.append("Please enter a valid credit card number.")
+            error = True
+        expiryMonth=coForm.expirationMonth.data
+        if expiryMonth>=1 and expiryMonth<=12:
+            errorMessage.append("")
+        else:
+            errorMessage.append("Please enter a valid month")
+            error = True
+        expiryYear=coForm.expirationYear.data
+        if expiryYear>=2021:
+            errorMessage.append("")
+        else:
+            errorMessage.append("Please enter a valid year")
+            error = True
+        cvv=coForm.cvv.data
+        if len(str(cvv))==3 and isinstance(cvv, int):
+            errorMessage.append("")
+        else:
+            errorMessage.append("Please enter a valid cvv number")
+            error = True
+        if error:
+            return render_template('checkout.html', coForm=coForm, errorMessage=errorMessage)
+        
+        vouchercat = Vouchercat.query.filter_by(id=voucherId)
+
+        voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(vouchers_owned[i].expiry - 1)
+        vouchers_owned[i].expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
+        voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=expiry, value=value, transfer=transfer, status=status, expirydate=expirydate)
+        db.session.add(voucher)
+        db.session.commit()
+        return render_template('test.html', data="buyyyy")
+    return render_template('checkout.html', coForm=coForm)
 
 @app.route('/elements')
 def elements():
@@ -197,12 +252,14 @@ def cashierqr():
 @login_required
 def logoutuser():
     logout_user()
+    session.clear()
     return redirect(url_for('users'))
 
 @app.route("/cashier/logout")
 @login_required
 def logoutcashier():
     logout_user()
+    session.clear()
     return redirect(url_for('cashier'))
 
 @app.route("/cashier/scanQR/<int:voucherid>", methods=['POST'])

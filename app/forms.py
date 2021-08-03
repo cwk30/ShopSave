@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm 
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, PasswordField, IntegerField, SubmitField, BooleanField, TextAreaField, RadioField, SelectField
-from wtforms.validators import Required, Length, Email, EqualTo, ValidationError
-from app.models import (User)
+from wtforms import StringField, PasswordField, IntegerField, DateField, SubmitField, BooleanField, TextAreaField, RadioField, SelectField
+from wtforms.validators import Required, Length, Email, EqualTo, ValidationError, NumberRange
+from app.models import (User, Voucher, Vouchercat)
 from flask_login import current_user
 
 
@@ -82,6 +82,19 @@ class CashierLoginForm(FlaskForm):
     submit = SubmitField('Login') 
 
 class BuyForm(FlaskForm):
-    quantity = IntegerField('Quantity', validators=[Required()])
+    quantity = IntegerField('Quantity', validators=[Required(), NumberRange(min=1, message="Qty must be at least 1")])
 
+    submit = SubmitField('Buy')
+    # def validate_purchase(self, qtyBought, voucherId):
+    #     qtyAvailable = Vouchercat.query.filter_by(id=voucherId).first().quantity
+    #     if qtyAvailable<qtyBought:
+    #         errorMessage = "Not able to purchase " + str(qtyBought) + " vouchers. Only " + str(qtyAvailable) + " vouchers available."
+    #         raise ValidationError(errorMessage)
+
+class CheckoutForm(FlaskForm):
+    nameOnCard = StringField('Name on card', validators=[Required()])
+    creditCardNumber = IntegerField('Credit Card Number', validators=[Required()])
+    expirationMonth = IntegerField("Expiration Month (MM)", validators=[Required()])
+    expirationYear = IntegerField("Expiration Year (YYYY)", validators=[Required()])
+    cvv = IntegerField("CVV", validators=[Required()])
     submit = SubmitField('Buy')
