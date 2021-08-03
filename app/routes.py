@@ -248,6 +248,7 @@ def cashierprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
+            print('photo')
             picture_file = save_picture(form.picture.data)
             current_user.photo = picture_file
         current_user.address = form.address.data
