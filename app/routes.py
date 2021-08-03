@@ -73,9 +73,20 @@ def cashier():
 @login_required 
 def userhome():
     data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
+    distinct_cashiers = []
+    for i in range(len(data)):
+        if data[i].cashiername not in distinct_cashiers:
+            distinct_cashiers.append(data[i].cashiername)
     # data = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()  
     # print(data)
-    return render_template('userlanding.html', data=data)
+    return render_template('userlanding.html', data=distinct_cashiers)
+    # return render_template('test.html', data=data)
+
+@app.route('/user/voucherstore/<string:cashiername>',methods=['GET', 'POST'])
+@login_required 
+def uservoucherstore(cashiername):
+    vouchers_on_sale = Vouchercat.query.filter_by(cashiername = cashiername).all()
+    return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername)
     # return render_template('test.html', data=data)
 
 @app.route('/user/voucherwallet', methods=['GET', 'POST'])
