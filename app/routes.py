@@ -194,7 +194,7 @@ def cashierprofile():
         current_user.password = hashed_password
         db.session.commit()
         flash('Your account info has been updated', 'success')
-        return redirect(url_for('account'))
+        return redirect(url_for('cashierprofile'))
     #elif request.method == 'GET':
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
@@ -213,7 +213,7 @@ def userprofile():
         current_user.password = hashed_password
         db.session.commit()
         flash('Your account info has been updated', 'success')
-        return redirect(url_for('account'))
+        return redirect(url_for('userprofile'))
     #elif request.method == 'GET':
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('userprofile.html', title="Profile", image_file=image_file, form=form)
