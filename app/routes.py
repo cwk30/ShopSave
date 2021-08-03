@@ -256,8 +256,10 @@ def cashierprofile():
     form = UpdateAccountForm()
     files = os.listdir(app.config['UPLOAD_PATH'])
     if form.validate_on_submit():
+        print('hi')
         uploaded_file = request.files['file']
         filename = secure_filename(uploaded_file.filename)
+        print(filename)
         if filename != '':
             file_ext = os.path.splitext(filename)[1]
             if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
