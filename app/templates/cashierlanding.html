@@ -6,10 +6,16 @@
 	<script type="text/javascript">
 	google.charts.load('current', {'packages':['corechart']});
 	google.charts.setOnLoadCallback(drawChart);
-	// var chartData = {{ chartData }};
+	var chartData = {{ chartData }};
 	function drawChart() {
 
-		var data = google.visualization.arrayToDataTable(chartData);
+		var data = google.visualization.arrayToDataTable([
+		['Month', 'Sales'],
+		['Jan',  10],
+		['Feb',  11],
+		['Mar',  6],
+		['Apr',  10]
+		]);
 
 		var options = {
 		title: 'Sales Chart',
