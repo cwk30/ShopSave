@@ -125,7 +125,7 @@ def uservoucherstore(cashiername):
 @app.route('/user/voucherwallet', methods=['GET', 'POST'])
 @login_required
 def uservoucherwallet():
-    voucher_data = Voucher.query.filter_by(username = current_user.username).all()
+    voucher_data = Voucher.query.filter_by(username = current_user.username, status = 1).all()
     # distinct_cashiers = []
     # for i in range(len(voucher_data)):
     #     if voucher_data[i].cashiername not in distinct_cashiers:
@@ -152,18 +152,23 @@ def uservoucherwallet():
 @login_required 
 def uservoucher(cashiername):
     vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1).all()
-    user = User.query.filter_by(username = vouchers_owned[0].cashiername).all()
-    user_pic = user[0].photo
-    return render_template('uservoucher.html', data=vouchers_owned, user_pic = user_pic)
+    if len(vouchers_owned) > 0:
+        user = User.query.filter_by(username = vouchers_owned[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('uservoucher.html', data=vouchers_owned, user_pic = user_pic)
+    else:
+        return render_template('emptyvoucher.html', data=cashiername, available = 1)
 
 @app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
 @login_required 
 def unavailablevoucher(cashiername):
     unavailable_vouchers = Voucher.query.filter(Voucher.status != 1, Voucher.username == current_user.username, Voucher.cashiername==cashiername).all()
     if len(unavailable_vouchers) == 0 :
-        return render_template('emptyvoucher.html', data=cashiername)
+        return render_template('emptyvoucher.html', data=cashiername, available = 0)
     else:
-        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers)
+        user = User.query.filter_by(username = unavailable_vouchers[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers, user_pic = user_pic)
 
 @app.route('/user/voucherwallet/<int:voucherid>',methods=['GET', 'POST'])
 @login_required 
@@ -174,28 +179,6 @@ def voucherqr(voucherid):
     qr.save("app/" + filePath, "JPEG")
     reply={'filePath': filePath}
     return make_response(jsonify(reply), 200)
-
-# @app.route('/user/voucherwallet/<string:cashiername>/testing',methods=['GET'])
-# @login_required 
-# def testing(cashiername):
-#     # data = Voucher.query\
-#     #     .join(User)\
-#     #     .filter_by(Voucher.username==User.username).all()
-#     data = select(Voucher).where(
-#                 and_(
-#                     Voucher.cashiername == 'cashier1',
-#                     Voucher.value == 20
-#                 )
-#             )
-#     print(data)
-#     engine = create_engine('sqlite:///site.db')
-#     with engine.connect() as con:
-
-#         rs = con.execute('SELECT * FROM Voucher')
-
-#     for row in rs:
-#         print(row)
-#     return render_template('notyet.html')
 
 @app.route('/voucher/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
