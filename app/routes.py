@@ -148,7 +148,9 @@ def unavailablevoucher(cashiername):
     if len(unavailable_vouchers) == 0 :
         return render_template('emptyvoucher.html', data=cashiername, available = 0)
     else:
-        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers)
+        user = User.query.filter_by(username = unavailable_vouchers[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers, user_pic = user_pic)
 
 @app.route('/user/voucherwallet/<int:voucherid>',methods=['GET', 'POST'])
 @login_required 
