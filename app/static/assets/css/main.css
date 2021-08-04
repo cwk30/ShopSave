@@ -4450,8 +4450,7 @@ button[disabled],
 
 #cards {
 	padding-bottom: calc(var(--numcards) * var(--card-top-offset)); /* Make place at bottom, as items will slide to that position*/
-	margin-bottom: var(--card-margin); /* Don't include the --card-margin in padding, as that will affect the scroll-timeline*/
-}
+	margin-bottom: var(--card-margin); /* Don't include the --card-margin in padding, as that will affect the scroll-timeline*/}
 
 #card_1 {
 	--index: 1;
@@ -4583,6 +4582,9 @@ button[disabled],
 	}
 }
 
+/** DEBUG **/
+
+
 
 
 #cards {
@@ -4606,9 +4608,11 @@ button[disabled],
 	border-radius: 1em;
 	overflow: hidden;
 	display: grid;
+  
 	grid-template-areas: "text img";
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: auto;
+  height:187px;
 
 	align-items: stretch;
 	outline: var(--outline-width) solid lime;
@@ -4632,7 +4636,7 @@ button[disabled],
 
 .card__content > figure > img {
 	width: 100%;
-	height: 100%;
+	height: 187.2px;
 	object-fit: cover;
 }
 
@@ -4662,7 +4666,7 @@ button[disabled],
 
 #cards .card p1{
   font-size: 30px;
-  margin-left: auto;
+  margin-right: auto;
 }
 
 aside {
@@ -4683,7 +4687,7 @@ div.buy-button {
   margin-right: auto;
 }
 
-ul.actions {
+div.buy-button ul.actions {
   margin-left: auto;
   margin-right: auto;
 
