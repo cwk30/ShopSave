@@ -1,0 +1,65 @@
+{% extends "landinglayout.html" %}
+
+{% block content %}
+<!-- Header -->
+	<header id="header">
+		<div class="content">
+			<h1>Update Form Details</h1>
+			<form method="POST" action="">
+				{{ updateform.hidden_tag() }}
+				<div class="fields">
+					<div class="field half">
+						{% if errorMessage %}
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[0] }}</span> 
+							</div>
+							{{ updateform.value.label(class="form-control-label") }}
+							{{ updateform.value(class="form-control form-control-lg is-invalid") }}
+							<br>
+							{{ updateform.transfer.label(class="form-check") }}
+							{{ updateform.transfer(class="form-control form-control-lg is-invalid") }}
+							<br>
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[1] }}</span> 
+							</div>
+							{{ updateform.cost.label(class="form-control-label") }}
+							{{ updateform.cost(class="form-control form-control-lg is-invalid") }}
+							<br>
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[2] }}</span> 
+							</div>
+							{{ updateform.expirydur.label(class="form-control-label") }}
+							{{ updateform.expirydur(class="form-control form-control-lg is-invalid") }}
+							<br>							
+							<div class="invalid-feedback">
+								<span style="color:red">{{ errorMessage[3] }}</span> 
+							</div>
+							{{ updateform.quantity.label(class="form-control-label") }}
+							{{ updateform.quantity(class="form-control form-control-lg is-invalid") }}
+
+						{% else %}
+							{{ updateform.value.label(class="form-control-label") }}
+							{{ updateform.value(class="form-control form-control-lg") }}
+							<br>
+							{{ updateform.transfer.label(class="form-control-label") }}
+							{{ updateform.transfer(class="form-check-input") }}
+							<br>
+							{{ updateform.cost.label(class="form-control-label") }}
+							{{ updateform.cost(class="form-control form-control-lg") }}
+							<br>
+							{{ updateform.expirydur.label(class="form-control-label") }}
+							{{ updateform.expirydur(class="form-control form-control-lg") }}							
+							<br>
+							{{ updateform.quantity.label(class="form-control-label") }}
+							{{ updateform.quantity(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+				</div>
+			<ul class="actions">
+				{{ updateform.submit(class="btn btn-outline-info") }}
+			</ul>
+			</form>
+
+		</div>
+	</header>
+{% endblock %}

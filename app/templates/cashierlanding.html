@@ -6,16 +6,36 @@
 	<script type="text/javascript">
 	google.charts.load('current', {'packages':['corechart']});
 	google.charts.setOnLoadCallback(drawChart);
-	var chartData = {{ chartData }};
-	function drawChart() {
+	function processJsonString(chartData) {
+    var regex = /^[a-z0-9]+$/i
+    var processChartData = [];
+    var currString = "";
+    for (let i = 0; i < chartData.length; i++) {
+      if (!chartData[i].match(regex)) {
+        if (currString.length > 0) {
+          processChartData.push(currString);
+          currString = "";
+        }
+      }
+      else {
+        currString += chartData[i];
+      }
+    }
 
-		var data = google.visualization.arrayToDataTable([
-		['Month', 'Sales'],
-		['Jan',  10],
-		['Feb',  11],
-		['Mar',  6],
-		['Apr',  10]
-		]);
+    var finalData = []
+    for (let i = 0; i < processChartData.length / 2; i++) {
+      if (i === 0) {
+        finalData.push([processChartData[i], processChartData[i+1]])
+      }
+      else {
+        finalData.push([processChartData[i*2], parseInt(processChartData[(i*2)+1])])
+      }
+    }
+    return finalData;
+  }
+console.log('{{ chartList|tojson }}')
+	function drawChart() {
+		var data = google.visualization.arrayToDataTable(processJsonString('{{ chartList|tojson }}'));
 
 		var options = {
 		title: 'Sales Chart',

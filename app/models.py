@@ -15,6 +15,7 @@ class Voucher(db.Model):
     transfer = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Integer, nullable=False)
     expirydate = db.Column(db.String(20), nullable=False)
+    sold = db.Column(db.Integer, nullable=False)
 
 class Vouchercat(db.Model):
     id = db.Column(db.Integer, primary_key = True)

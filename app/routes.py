@@ -7,11 +7,12 @@ from flask import (render_template, jsonify, make_response, url_for, flash, redi
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_, select, create_engine
 from flask_sqlalchemy import Pagination
-from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
+from app.forms import (UserRegistrationForm, VoucherUpdate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
 from app.models import (User, Voucher, Vouchercat)
 from flask import request
 import qrcode
 import datetime
+from collections import defaultdict, OrderedDict
 
 def validate_image(stream):
     header = stream.read(512)  # 512 bytes should be enough for a header check
@@ -258,6 +259,7 @@ def userQR():
 @app.route('/cashier/home',methods=['GET', 'POST'])
 @login_required
 def cashierhome():
+
     # data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
     cashier = session["username"]
     cashierdata = Vouchercat.query.filter_by(cashiername=cashier).all()
@@ -268,37 +270,54 @@ def cashierhome():
         sold += i.sold
     chartData = []
     chartData.append(['Month', 'Sales'])
-    # voucherdata = Voucher.query.filter_by(cashiername=cashier).order_by(sold)
-    # # make a dictionary of month-year
-    # epoch_day = datetime.datetime(today.year,today.month,today.day) - datetime.datetime(1970,1,1) + datetime.timedelta(days=vouchercat.expirydur+1)
-    # voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(epoch_day.days - 1)
+    voucherdata = Voucher.query.filter_by(cashiername=cashier)
+    chartDic = defaultdict(int)
+    for i in voucherdata:
+        soldEpoch = i.sold
+        soldDate = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(soldEpoch - 1)
+        month = soldDate.month
+        year = soldDate.year
+        cost = Vouchercat.query.filter_by(value=i.value, cashiername=cashier).first().cost
+        chartDic[month] += cost
+        # print(cost)
+        # if year not in chartDic:
+        #     chartDic[year] = {}
+        # if month not in chartDic[year]:
+        #     chartDic[year][month] = cost
+        # else:
+        #     chartDic[year][month] += cost
+    # chartDic = dict(sorted(chartDic.items()))
+    chartDic=  OrderedDict(sorted(chartDic.items()))
+    # return render_template('test.html', data=chartDic)
+    chartList =[]
+    # for year, yeardict in chartDic.items():
+    #     for month, cost in yeardict.items():
+    #         chartList.append( [year, month ,chartDic[year][month]])
+    # chartList = sorted()
 
-    # # loop through dic. If there is data, add to list.
-    # for i in voucherdata:
-    #     chartData.append(['', ''])
-    chartData=[
-		['Month', 'Sales'],
-		['Jan',  10],
-		['Feb',  11],
-		['Mar',  6],
-		['Apr',  10]
-		]
-    return render_template('cashierlanding.html', revenue=revenue, sold=sold, vouchers=cashierdata, chartData=chartData)
+    # print(chartList)
+    chartList.append(["Month", "Revenue"])
+    for key, value in chartDic.items():
+        temp = [key,value]
+        chartList.append(temp)
+
+    return render_template('cashierlanding.html', revenue=revenue, sold=sold, vouchers=cashierdata, chartList=chartList)
 
 @app.route('/cashier/manage_vouchers',methods=['GET', 'POST'])
 @login_required
 def manageVouchers():
     cashier = session["username"]
     voucherdata = Vouchercat.query.filter_by(cashiername=cashier).all()
-    # CHECK WITH WC WHAT DATA HE NEEDS
-    return render_template('manageVouchers.html', voucherdata=voucherdata)
+    # CHECK WITH JQ WHAT DATA HE NEEDS
+    return render_template('cashiervouchers.html', voucherdata=voucherdata)
 
 @app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherUpdate(voucherid):
-    # buy_form=BuyForm()
-    # if buy_form.validate_on_submit():
-    #     voucherData = Vouchercat.query.filter_by(id=voucherid).first()       
+    voucherUpdateForm=VoucherUpdate()
+    voucherData = Vouchercat.query.filter_by(id=voucherid).first()
+    # if voucherUpdate.validate_on_submit():
+    #     pass
     #     quantity = buy_form.quantity.data
     #     if quantity <= voucherData.quantity:
     #         session['voucherID'] = voucherData.id
@@ -307,13 +326,17 @@ def voucherUpdate(voucherid):
     #     else:
     #         errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
     #         return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
-    # voucherData = Vouchercat.query.filter_by(id=voucherid).first()
-    return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form)
+    db.session.commit()
+    return render_template('voucherupdate.html', voucherData=voucherData, updateform=voucherUpdateForm)
 
-@app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
+@app.route('/voucher/delete/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherDelete(voucherid):
-    pass
+    # Send back to cashiervouchers.html with an alert
+    voucherDeleted = Vouchercat.query.filter_by(id=voucherid).delete()
+    alertMessage = "$" + str(voucherDeleted.value) + " Voucher has been deleted"
+    db.session.commit()
+    return render_template('', alert=alertMessage)
 
 @app.route("/cashier/account", methods=['GET', 'POST'])
 @login_required 

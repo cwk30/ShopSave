@@ -103,3 +103,12 @@ class CheckoutForm(FlaskForm):
     expirationYear = IntegerField("Expiration Year (YYYY)", validators=[Required()])
     cvv = IntegerField("CVV", validators=[Required()])
     submit = SubmitField('Buy')
+
+class VoucherUpdate(FlaskForm):
+    value = IntegerField("Voucher Value", validators=[Required()])
+    transfer = BooleanField('Transferable?')
+    cost = IntegerField("Cost Price", validators=[Required()])
+    expirydur = IntegerField("Expiry Duration", validators=[Required()])
+    quantity = IntegerField("Quantity", validators=[Required()])
+    submit = SubmitField('Update')
+
