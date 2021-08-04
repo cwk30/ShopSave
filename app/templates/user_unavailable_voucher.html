@@ -50,7 +50,7 @@
 				<div class="col-6 col-12-medium">
 					<ul class="pagination">
 						<li><a href="{{url_for('uservoucher', cashiername=data[0].cashiername)}}" class="button scrolly">Available</a></li>
-						<li><a href="#one" class="button scrolly">Used/Expired</a></li>
+						<li><a href="#one" class="button scrolly">Claimed</a></li>
 					</ul>
 				</div>
 			</div>
@@ -87,7 +87,7 @@
 							{% if vouchers.status == 0 %}
 								<div style="width:100%; display: flex; justify-content:center;"><button disabled>Expired</button></div>
 							{% else %}
-								<div style="width:100%; display: flex; justify-content:center;"><button disabled>Used</button></div>
+								<div style="width:100%; display: flex; justify-content:center;"><button disabled>Claimed</button></div>
 							{% endif %}
 						</div>
 					  </div>

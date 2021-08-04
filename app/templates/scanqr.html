@@ -125,6 +125,7 @@ async function makeQrAuthenticationAPIcall(qrId) {
   });
   if (response.status === 200) {
 		const jsonResponse = await response.json(); // check if we need to await again
+		console.log(jsonResponse);
 		successNotification(jsonResponse.cashiername, jsonResponse.value)
   } else {
 		console.log(response);
