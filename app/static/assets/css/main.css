@@ -4707,3 +4707,31 @@ div.fieldsbutton{
 ul.loginactions{
   padding-top: 20px;
 }
+
+.profilepic{
+  display: flex;
+  margin: 0 0 20px 0 ;
+  justify-content: space-around;
+}
+
+
+.profilepic img{
+  max-width: 70%;
+}
+
+.editpic {
+  margin-bottom: 20px;
+}
+
+div.update-button {
+  width: 80%;
+  margin-top: 35px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div.update-button ul.actions {
+  margin-left: auto;
+  margin-right: auto;
+
+}
