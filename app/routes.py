@@ -257,12 +257,12 @@ def checkout():
         voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(epoch_day.days - 1)
         expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
         # voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate)
-        
+        today_epoch = datetime.datetime(today.year,today.month,today.day) - datetime.datetime(1970,1,1) + datetime.timedelta(days=1)
         vouchercat.quantity = vouchercat.quantity - quantity
         vouchercat.sold = vouchercat.sold + quantity
         
         for i in range(quantity):
-            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate))
+            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate, sold=today_epoch.days))
         db.session.commit()
         voucher_purchased = Vouchercat.query.filter_by(id = voucherId).all()
         return render_template('purchase_voucher_confirm.html', quantity=quantity, value=voucher_purchased[0].value, cashiername=voucher_purchased[0].cashiername)
@@ -456,10 +456,10 @@ def save_picture(form_picture):
     i.thumbnail(output_size)
     
     i.save(picture_path)
-
     return picture_fn
 
 # @app.errorhandler(Exception)
 # def server_error(err):
 #     app.logger.exception(err)
 #     return unauthorized_callback()
+
