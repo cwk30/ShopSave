@@ -108,11 +108,16 @@ def uservoucherwallet():
             unique_cashier_freq[voucher_data[i].cashiername] = 1
         else:
             unique_cashier_freq[voucher_data[i].cashiername] += 1
+    count = 1
+    positions = []
+    for key, value in unique_cashier_freq.items():
+        positions.append((key,value,count))
+        count = count + 1
     # print(unique_cashier_freq)
     if len(unique_cashier_freq) == 0 :
         return render_template('emptywallet.html')
     else:
-        return render_template('wallet.html', data=unique_cashier_freq)
+        return render_template('wallet.html', data=positions, value = len(positions))
 
 @app.route('/user/voucherwallet/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
