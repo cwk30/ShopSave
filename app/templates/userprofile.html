@@ -36,8 +36,25 @@
 				<header class="major">
 					<h1>Update Profile</h1>
 				</header>
-				<span class="image left"><img src="{{ url_for('static', filename='uploads/'+current_user.photo)}}" alt="" /></span>
-				<br>
+				<div class = "profilepic">
+					<img src="{{ url_for('static', filename='uploads/'+current_user.photo)}}" alt="" />
+					</div>
+					<div class = "editpic">
+						<div class="col-6 col-12-xsmall">
+							{{ form.photo.label(class="form-control-label") }}
+							{% if form.photo.errors %}  
+								{{ form.photo(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.photo.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ form.photo(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+
+					</div>
 				<form method="POST" action="" enctype="multipart/form-data">
 					{{ form.hidden_tag() }}
 					<div class="row gtr-uniform">
@@ -81,23 +98,12 @@
 								{{ form.contactno(class="form-control form-control-lg") }}
 							{% endif %}
 						</div>
-						<div class="col-6 col-12-xsmall">
-							{{ form.photo.label(class="form-control-label") }}
-							{% if form.photo.errors %}  
-								{{ form.photo(class="form-control form-control-lg is-invalid") }}
-							<div class="invalid-feedback">
-								{% for error in form.photo.errors %}
-									<span>{{ error }}</span> 
-								{% endfor %}
-							</div>
-							{% else %}
-								{{ form.photo(class="form-control form-control-lg") }}
-							{% endif %}
-						</div>
 					</div>
+				<div class = "update-button">
 				<ul class="actions">
 					{{ form.submit(class="btn btn-outline-info") }}
 				</ul>
+			</div>
 				</form>
 			</div>
 		</section>
