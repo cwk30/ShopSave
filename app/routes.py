@@ -88,20 +88,38 @@ def cashier():
 @login_required 
 def userhome():
     data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
-    distinct_cashiers = []
+    # distinct_cashiers = []
+    # for i in range(len(data)):
+    #     if data[i].cashiername not in distinct_cashiers:
+    #         distinct_cashiers.append(data[i].cashiername)
+    # join = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()
+    # return render_template('test.html', data=join)
+
+    # voucher_data = Voucher.query.filter_by(username = current_user.username).all()
+    unique_cashier_freq = {}
     for i in range(len(data)):
-        if data[i].cashiername not in distinct_cashiers:
-            distinct_cashiers.append(data[i].cashiername)
-    # data = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()  
-    # print(data)
-    return render_template('userlanding.html', data=distinct_cashiers)
-    # return render_template('test.html', data=data)
+        if data[i].cashiername not in unique_cashier_freq:
+            unique_cashier_freq[data[i].cashiername] = 1
+        else:
+            unique_cashier_freq[data[i].cashiername] += 1
+    positions = []
+    for name, count in unique_cashier_freq.items():
+        user = User.query.filter_by(username = name).first()
+        user_pic = user.photo
+        positions.append((name,count,user_pic))
+    return render_template('userlanding.html', data=positions)
 
 @app.route('/user/voucherstore/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
 def uservoucherstore(cashiername):
     vouchers_on_sale = Vouchercat.query.filter_by(cashiername = cashiername).all()
-    return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername)
+    if len(vouchers_on_sale) > 0:
+        user = User.query.filter_by(username = vouchers_on_sale[0].cashiername).first()
+        user_pic = user.photo
+        return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername, user_pic=user_pic)
+    else:
+        emptyMessage = "This store has no vouchers for sale."
+        return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername, emptyMessage=emptyMessage)
     # return render_template('test.html', data=data)
 
 @app.route('/user/voucherwallet', methods=['GET', 'POST'])
@@ -424,9 +442,7 @@ def save_picture(form_picture):
 
     return picture_fn
 
-@app.errorhandler(Exception)
-def server_error(err):
-    app.logger.exception(err)
-    return unauthorized_callback()
-    # return render_template('test.html', data=err)
-    # return "exception", 500
+# @app.errorhandler(Exception)
+# def server_error(err):
+#     app.logger.exception(err)
+#     return unauthorized_callback()
