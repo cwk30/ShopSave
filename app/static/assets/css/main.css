@@ -4703,3 +4703,7 @@ div.fieldsbutton{
   margin-right: auto;
   margin-top: 5%;
 }
+
+ul.loginactions{
+  padding-top: 20px;
+}
