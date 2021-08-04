@@ -15,9 +15,7 @@
 							</div>
 							{{ updateform.value.label(class="form-control-label") }}
 							{{ updateform.value(class="form-control form-control-lg is-invalid") }}
-							<br>
-							{{ updateform.transfer.label(class="form-check") }}
-							{{ updateform.transfer(class="form-control form-control-lg is-invalid") }}
+							
 							<br>
 							<div class="invalid-feedback">
 								<span style="color:red">{{ errorMessage[1] }}</span> 
@@ -40,9 +38,7 @@
 						{% else %}
 							{{ updateform.value.label(class="form-control-label") }}
 							{{ updateform.value(class="form-control form-control-lg") }}
-							<br>
-							{{ updateform.transfer.label(class="form-control-label") }}
-							{{ updateform.transfer(class="form-check-input") }}
+
 							<br>
 							{{ updateform.cost.label(class="form-control-label") }}
 							{{ updateform.cost(class="form-control form-control-lg") }}
