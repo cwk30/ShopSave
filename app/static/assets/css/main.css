@@ -4276,9 +4276,261 @@ button[disabled],
   align-items:center;
 }
 
+
+.cardroot1 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 1;
+	--outline-width: 0px;
+}
+
+.cardroot2 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 2;
+	--outline-width: 0px;
+}
+
+.cardroot3 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 3;
+	--outline-width: 0px;
+}
+
+.cardroot4 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 4;
+	--outline-width: 0px;
+}
+
+.cardroot5 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 5;
+	--outline-width: 0px;
+}
+
+.cardroot6 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 6;
+	--outline-width: 0px;
+}
+
+.cardroot7 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 7;
+	--outline-width: 0px;
+}
+
+.cardroot8 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 8;
+	--outline-width: 0px;
+}
+
+.cardroot9 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 9;
+	--outline-width: 0px;
+}
+
+.cardroot10 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 10;
+	--outline-width: 0px;
+}
+
+.cardroot11 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 11;
+	--outline-width: 0px;
+}
+
+
+.cardroot12 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 12;
+	--outline-width: 0px;
+}
+
+
+.cardroot13 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 13;
+	--outline-width: 0px;
+}
+
+
+.cardroot14 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 14;
+	--outline-width: 0px;
+}
+
+
+.cardroot15 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 15;
+	--outline-width: 0px;
+}
+
+
+.cardroot16 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 16;
+	--outline-width: 0px;
+}
+
+
+.cardroot17 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 17;
+	--outline-width: 0px;
+}
+
+
+.cardroot18 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 18;
+	--outline-width: 0px;
+}
+
+.cardroot19 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 19;
+	--outline-width: 0px;
+}
+
+
+.cardroot20 {
+	--card-height: 40vw;
+	--card-margin: 8vw;
+	--card-top-offset: 1em;
+	--numcards: 20;
+	--outline-width: 0px;
+}
+
+
+
+
 #cards {
 	padding-bottom: calc(var(--numcards) * var(--card-top-offset)); /* Make place at bottom, as items will slide to that position*/
 	margin-bottom: var(--card-margin); /* Don't include the --card-margin in padding, as that will affect the scroll-timeline*/
+}
+
+#card_1 {
+	--index: 1;
+}
+
+#card_2 {
+	--index: 2;
+}
+
+#card_3 {
+	--index: 3;
+}
+
+#card_4 {
+	--index: 4;
+}
+
+#card_5 {
+	--index: 5;
+}
+
+#card_6 {
+	--index: 6;
+}
+
+#card_7 {
+	--index: 7;
+}
+
+#card_8 {
+	--index: 8;
+}
+
+#card_9 {
+	--index: 9;
+}
+
+#card_10 {
+	--index: 10;
+}
+
+#card_11 {
+	--index: 11;
+}
+
+#card_12 {
+	--index: 12;
+}
+
+#card_13 {
+	--index: 13;
+}
+
+#card_14 {
+	--index: 14;
+}
+
+#card_15 {
+	--index: 15;
+}
+
+#card_16 {
+	--index: 16;
+}
+
+#card_17 {
+	--index: 17;
+}
+
+#card_18 {
+	--index: 18;
+}
+
+#card_19 {
+	--index: 19;
+}
+
+#card_20 {
+	--index: 20;
 }
 
 .card {
@@ -4331,6 +4583,8 @@ button[disabled],
 	}
 }
 
+
+
 #cards {
 	list-style: none;
 	outline: calc(var(--outline-width) * 10) solid blue;
@@ -4351,7 +4605,6 @@ button[disabled],
 	color: rgb(10, 5, 7);
 	border-radius: 1em;
 	overflow: hidden;
-
 	display: grid;
 	grid-template-areas: "text img";
 	grid-template-columns: 1fr 1fr;
@@ -4368,7 +4621,7 @@ button[disabled],
 	text-align: left;
 
 	display: grid;
-	gap: 1em;
+	gap: 0;
 	place-items: start;
 }
 
@@ -4381,4 +4634,44 @@ button[disabled],
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+}
+
+
+#cards .card .btn {
+	background: rgb(188 87 36);
+	color: rgb(255 255 255);
+	text-decoration: none;
+	display: inline-block;
+	padding: 0.5em;
+	border-radius: 0.25em;
+}
+
+
+#cards .card p{
+  margin: 0 0 0 0;
+}
+
+#cards .card p1{
+  margin: 0 0 0.5em 0;
+}
+
+#cards .card h2{
+  font-weight: bold;
+  margin: 1em 0 0 0;
+}
+
+#cards .card p1{
+  font-size: 30px;
+  margin-left: auto;
+}
+
+aside {
+	width: 50vw;
+	margin: 0 auto;
+	text-align: left;
+}
+
+.cards ul{
+  padding-left: 1em;
+  a
 }

@@ -44,39 +44,25 @@
 		</div>
 	</section>
 
-<!-- Main -->
-	<div id="main">
-		<!-- One -->
-			<section id="one" class="tiles">
-				{% for voucher in data %}
-					<article>
-						<span class="image">
-							<img src="{{url_for('static', filename='images/pic01.jpg')}}" alt="" />
-						</span>
-						<header class="major">
-							<h3><a href="{{url_for('uservoucher', cashiername=voucher)}}" class="link">{{ voucher }}</a></h3>
-							<p>Ipsum dolor sit amet</p>
-						</header>
-					</article>
-				{% endfor %}
-			</section>
-	</div>
-
 <!-- trying -->
-<ul id="cards">
-	{% for key, value in data.items() %}
-		<li class="card">
-			<div style="margin: 10px 3.5px 0 -20px;" class="card__content">
-				<div>
-					<h2 span style="color:#232B47;">{{ key }}</span></h2>
-					<p>Number of vouchers: {{ value }}</p>
-					<p id={{key}}><a style="display:block;" href="{{url_for('uservoucher', cashiername=key)}}" class="btn btn--accent">{{ key }}</a><p>
-				</div>
-				<figure>
-				<img src="https://codyhouse.co/demo-tutorials/stacking-cards/assets/img/img-2.jpg" alt="Image description">
-				</figure>
-			</div>
-		</li>
-	{% endfor %}	
-</ul>
+<div class = "cardroot{{ value }}">
+	<ul id="cards">
+		{% for key, value, position in data %}
+			<li class="card" id = "card_{{ position }}">
+				<a href="{{url_for('uservoucher', cashiername=key)}}">
+					<div style="margin: 10px 3.5px 0 -20px;" class="card__content">
+						<div>
+							<h2 span style="color:#232B47;">{{ key }}</span></h2>
+							<p>Number of vouchers: </p>
+							<p1> {{ value }} </p1>
+						</div>
+						<figure>
+						<img src="https://codyhouse.co/demo-tutorials/stacking-cards/assets/img/img-2.jpg" alt="Image description">
+						</figure>
+					</div>
+				</a>
+			</li>
+		{% endfor %}	
+	</ul>
+</div>
 {% endblock %}
