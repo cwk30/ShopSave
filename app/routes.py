@@ -102,6 +102,7 @@ def cashier():
 @app.route('/user/home', methods=['GET', 'POST'])
 @login_required
 def userhome():
+<<<<<<< HEAD
     data = Vouchercat.query.filter(Vouchercat.quantity > 0).all()
     distinct_cashiers = []
     for i in range(len(data)):
@@ -111,22 +112,60 @@ def userhome():
     # print(data)
     return render_template('userlanding.html', data=distinct_cashiers)
     # return render_template('test.html', data=data)
+=======
+    data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
+    # distinct_cashiers = []
+    # for i in range(len(data)):
+    #     if data[i].cashiername not in distinct_cashiers:
+    #         distinct_cashiers.append(data[i].cashiername)
+    # join = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()
+    # return render_template('test.html', data=join)
+
+    # voucher_data = Voucher.query.filter_by(username = current_user.username).all()
+    unique_cashier_freq = {}
+    for i in range(len(data)):
+        if data[i].cashiername not in unique_cashier_freq:
+            unique_cashier_freq[data[i].cashiername] = 1
+        else:
+            unique_cashier_freq[data[i].cashiername] += 1
+    positions = []
+    for name, count in unique_cashier_freq.items():
+        user = User.query.filter_by(username = name).first()
+        user_pic = user.photo
+        positions.append((name,count,user_pic))
+    return render_template('userlanding.html', data=positions)
+>>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
 
 
 @app.route('/user/voucherstore/<string:cashiername>', methods=['GET', 'POST'])
 @login_required
 def uservoucherstore(cashiername):
+<<<<<<< HEAD
     vouchers_on_sale = Vouchercat.query.filter_by(
         cashiername=cashiername).all()
     return render_template('uservoucherstore.html', data=vouchers_on_sale, name=cashiername)
+=======
+    vouchers_on_sale = Vouchercat.query.filter_by(cashiername = cashiername).all()
+    if len(vouchers_on_sale) > 0:
+        user = User.query.filter_by(username = vouchers_on_sale[0].cashiername).first()
+        user_pic = user.photo
+        return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername, user_pic=user_pic)
+    else:
+        emptyMessage = "This store has no vouchers for sale."
+        return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername, emptyMessage=emptyMessage)
+>>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
     # return render_template('test.html', data=data)
 
 
 @app.route('/user/voucherwallet', methods=['GET', 'POST'])
 @login_required
 def uservoucherwallet():
+<<<<<<< HEAD
     voucher_data = Voucher.query.filter_by(
         username=current_user.username).all()
+=======
+    voucher_data = Voucher.query.filter_by(username = current_user.username, status = 1).all()
+>>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
     # distinct_cashiers = []
     # for i in range(len(voucher_data)):
     #     if voucher_data[i].cashiername not in distinct_cashiers:
@@ -153,22 +192,40 @@ def uservoucherwallet():
 @app.route('/user/voucherwallet/<string:cashiername>', methods=['GET', 'POST'])
 @login_required
 def uservoucher(cashiername):
+<<<<<<< HEAD
     vouchers_owned = Voucher.query.filter_by(
         username=current_user.username, cashiername=cashiername, status=1).all()
     user = User.query.filter_by(username=vouchers_owned[0].cashiername).all()
     user_pic = user[0].photo
     return render_template('uservoucher.html', data=vouchers_owned, user_pic=user_pic)
 
+=======
+    vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1).all()
+    if len(vouchers_owned) > 0:
+        user = User.query.filter_by(username = vouchers_owned[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('uservoucher.html', data=vouchers_owned, user_pic = user_pic)
+    else:
+        return render_template('emptyvoucher.html', data=cashiername, available = 1)
+>>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
 
 @app.route('/user/voucherwallet/<string:cashiername>/unavailable', methods=['GET', 'POST'])
 @login_required
 def unavailablevoucher(cashiername):
+<<<<<<< HEAD
     unavailable_vouchers = Voucher.query.filter(
         Voucher.status != 1, Voucher.username == current_user.username, Voucher.cashiername == cashiername).all()
     if len(unavailable_vouchers) == 0:
         return render_template('emptyvoucher.html', data=cashiername)
+=======
+    unavailable_vouchers = Voucher.query.filter(Voucher.status != 1, Voucher.username == current_user.username, Voucher.cashiername==cashiername).all()
+    if len(unavailable_vouchers) == 0 :
+        return render_template('emptyvoucher.html', data=cashiername, available = 0)
+>>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
     else:
-        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers)
+        user = User.query.filter_by(username = unavailable_vouchers[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers, user_pic = user_pic)
 
 
 @app.route('/user/voucherwallet/<int:voucherid>', methods=['GET', 'POST'])
@@ -181,6 +238,7 @@ def voucherqr(voucherid):
     reply = {'filePath': filePath}
     return make_response(jsonify(reply), 200)
 
+<<<<<<< HEAD
 # @app.route('/user/voucherwallet/<string:cashiername>/testing',methods=['GET'])
 # @login_required
 # def testing(cashiername):
@@ -204,6 +262,8 @@ def voucherqr(voucherid):
 #     return render_template('notyet.html')
 
 
+=======
+>>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
 @app.route('/voucher/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucher(voucherid):
@@ -501,10 +561,7 @@ def save_picture(form_picture):
 
     return picture_fn
 
-
-@app.errorhandler(Exception)
-def server_error(err):
-    app.logger.exception(err)
-    return unauthorized_callback()
-    # return render_template('test.html', data=err)
-    # return "exception", 500
+# @app.errorhandler(Exception)
+# def server_error(err):
+#     app.logger.exception(err)
+#     return unauthorized_callback()

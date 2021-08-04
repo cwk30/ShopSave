@@ -47,24 +47,15 @@
 <div id="main">
 	<!-- One -->
 		<section id="one" class="tiles">
+			{% if emptyMessage %}
+				{{emptyMessage}}
+			{% endif %}
 			{% for vouchers in data %}
-				<!-- <article>
-					<span class="image">
-						<img src="{{url_for('static', filename='images/pic02.jpg')}}" alt="" />
-					</span>
-					<header class="major">
-						<h3><a href="{{url_for('userhome', userid=vouchers.id)}}" class="link">{{ vouchers.value }}</a></h3>
-						<p>{{ vouchers.cashiername }}</p>
-					</header>
-				</article> -->
 
 				<div class="voucher-card">
 					<div class="voucher-main">
 					  <div class="voucher-co-img">
-						<img
-						  src="https://i.pinimg.com/originals/c7/84/67/c78467db9ff497393cb548a48f02d451.png"
-						  alt=""
-						/>
+						<img src="{{url_for('static', filename='uploads/'+user_pic)}}" alt="Image description">
 					  </div>
 					  <div class="voucher-vertical"></div>
 					  <div class="voucher-content">
@@ -77,8 +68,6 @@
 					  <a href="{{url_for('voucher', voucherid=vouchers.id)}}" style="width:100%; display: flex; justify-content:center;"><button class="claim-button"><strike style="font-size:5vw">${{ vouchers.value }}</strike> <span style="font-size:8vw">${{ vouchers.cost }}</span></button></a>
 					</div>
 				  </div>
-
-
 			{% endfor %}
 		</section>
 {% endblock %}
