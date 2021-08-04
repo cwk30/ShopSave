@@ -202,6 +202,12 @@ def checkout():
     voucherId = session['voucherID']
     quantity = session['quantity']
     coForm = CheckoutForm()
+    if request.method == 'GET':
+        coForm.nameOnCard.data = "John Davis"
+        coForm.creditCardNumber.data = 4119528685973112
+        coForm.expirationMonth.data = 12
+        coForm.expirationYear.data = 2024
+        coForm.cvv.data = 621
     if coForm.validate_on_submit():
         errorMessage=[]
         error = False
