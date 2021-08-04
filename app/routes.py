@@ -1,21 +1,18 @@
 import secrets
 import os
-from PIL import Image
+from PIL import Image 
 from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
-from flask import (render_template, jsonify, make_response,
-                   url_for, flash, redirect, request, abort, session)
+from flask import (render_template, jsonify, make_response, url_for, flash, redirect, request, abort, session)
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_, select, create_engine
 from flask_sqlalchemy import Pagination
-from app.forms import (UserRegistrationForm, VoucherUpdate, UserLoginForm, BuyForm,
-                       UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
+from app.forms import (UserRegistrationForm, VoucherUpdate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
 from app.models import (User, Voucher, Vouchercat)
 from flask import request
 import qrcode
 import datetime
 from collections import defaultdict, OrderedDict
-
 
 def validate_image(stream):
     header = stream.read(512)  # 512 bytes should be enough for a header check
@@ -25,94 +22,71 @@ def validate_image(stream):
         return None
     return '.' + (format if format != 'jpeg' else 'jpg')
 
-
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     return redirect('/')
-
 
 @app.route("/trailer")
 def trailer():
     return redirect('https://www.youtube.com/watch?v=LGkUW5cUPz8')
 
-
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/',methods=['GET', 'POST'])
 def landing():
     return render_template('index.html')
 
-
-@app.route('/user', methods=['GET', 'POST'])
+@app.route('/user',methods=['GET', 'POST'])
 def users():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated: 
         return redirect(url_for('userhome'))
     userregister_form = UserRegistrationForm()
-    userlogin_form = UserLoginForm()
+    userlogin_form=UserLoginForm()
     if userregister_form.validate_on_submit():
         print('valid')
-        hashed_password = bcrypt.generate_password_hash(
-            userregister_form.password.data).decode('utf-8')
-        user = User(username=userregister_form.username.data, password=hashed_password,
-                    email=userregister_form.email.data, cashier=0, photo="img.png")
+        hashed_password = bcrypt.generate_password_hash(userregister_form.password.data).decode('utf-8')
+        user = User(username=userregister_form.username.data, password=hashed_password,email=userregister_form.email.data,cashier=0,photo="img.png")
         db.session.add(user)
         db.session.commit()
-        flash("Your account has been created! You are now able to log in", 'success')
+        flash("Your account has been created! You are now able to log in", 'success') 
         return redirect('/user#login')
     if userlogin_form.validate_on_submit():
-        user = User.query.filter_by(
-            username=userlogin_form.username.data).first()
-        if user and bcrypt.check_password_hash(user.password, userlogin_form.password.data) and user.cashier == 0:
+        user = User.query.filter_by(username=userlogin_form.username.data).first()
+        if user and bcrypt.check_password_hash(user.password, userlogin_form.password.data) and user.cashier==0:
             login_user(user, remember=userlogin_form.remember.data)
             next_page = request.args.get('next')
-            session["username"] = user.username
+            session["username"]=user.username
             return redirect(url_for('userhome'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('user.html', userregister_form=userregister_form, userlogin_form=userlogin_form)
+    return render_template('user.html',userregister_form=userregister_form, userlogin_form=userlogin_form)
 
-
-@app.route('/cashier', methods=['GET', 'POST'])
+@app.route('/cashier',methods=['GET', 'POST'])
 def cashier():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated: 
         return redirect(url_for('userhome'))
     cashierregister_form = CashierRegistrationForm()
-    cashierlogin_form = CashierLoginForm()
+    cashierlogin_form=CashierLoginForm()
     if cashierregister_form.validate_on_submit():
         print('valid')
-        hashed_password = bcrypt.generate_password_hash(
-            cashierregister_form.password.data).decode('utf-8')
-        user = User(username=cashierregister_form.username.data, password=hashed_password,
-                    email=cashierregister_form.email.data, cashier=1, photo="temp.jpg")
+        hashed_password = bcrypt.generate_password_hash(cashierregister_form.password.data).decode('utf-8')
+        user = User(username=cashierregister_form.username.data, password=hashed_password,email=cashierregister_form.email.data,cashier=1,photo="temp.jpg")
         db.session.add(user)
         db.session.commit()
-        flash("Your account has been created! You are now able to log in", 'success')
+        flash("Your account has been created! You are now able to log in", 'success') 
         return redirect('/cashier#login')
     if cashierlogin_form.validate_on_submit():
-        user = User.query.filter_by(
-            username=cashierlogin_form.username.data).first()
-        if user and bcrypt.check_password_hash(user.password, cashierlogin_form.password.data) and user.cashier == 1:
+        user = User.query.filter_by(username=cashierlogin_form.username.data).first()
+        if user and bcrypt.check_password_hash(user.password, cashierlogin_form.password.data) and user.cashier==1:
             login_user(user, remember=cashierlogin_form.remember.data)
             next_page = request.args.get('next')
-            session["username"] = user.username
+            session["username"]=user.username
             return redirect(url_for('cashierhome'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('cashier.html', cashierregister_form=cashierregister_form, cashierlogin_form=cashierlogin_form)
+    return render_template('cashier.html',cashierregister_form=cashierregister_form, cashierlogin_form=cashierlogin_form)
 
-
-@app.route('/user/home', methods=['GET', 'POST'])
-@login_required
+@app.route('/user/home',methods=['GET', 'POST'])
+@login_required 
 def userhome():
-<<<<<<< HEAD
-    data = Vouchercat.query.filter(Vouchercat.quantity > 0).all()
-    distinct_cashiers = []
-    for i in range(len(data)):
-        if data[i].cashiername not in distinct_cashiers:
-            distinct_cashiers.append(data[i].cashiername)
-    # data = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()
-    # print(data)
-    return render_template('userlanding.html', data=distinct_cashiers)
-    # return render_template('test.html', data=data)
-=======
     data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
     # distinct_cashiers = []
     # for i in range(len(data)):
@@ -134,17 +108,10 @@ def userhome():
         user_pic = user.photo
         positions.append((name,count,user_pic))
     return render_template('userlanding.html', data=positions)
->>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
 
-
-@app.route('/user/voucherstore/<string:cashiername>', methods=['GET', 'POST'])
-@login_required
+@app.route('/user/voucherstore/<string:cashiername>',methods=['GET', 'POST'])
+@login_required 
 def uservoucherstore(cashiername):
-<<<<<<< HEAD
-    vouchers_on_sale = Vouchercat.query.filter_by(
-        cashiername=cashiername).all()
-    return render_template('uservoucherstore.html', data=vouchers_on_sale, name=cashiername)
-=======
     vouchers_on_sale = Vouchercat.query.filter_by(cashiername = cashiername).all()
     if len(vouchers_on_sale) > 0:
         user = User.query.filter_by(username = vouchers_on_sale[0].cashiername).first()
@@ -153,19 +120,12 @@ def uservoucherstore(cashiername):
     else:
         emptyMessage = "This store has no vouchers for sale."
         return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername, emptyMessage=emptyMessage)
->>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
     # return render_template('test.html', data=data)
-
 
 @app.route('/user/voucherwallet', methods=['GET', 'POST'])
 @login_required
 def uservoucherwallet():
-<<<<<<< HEAD
-    voucher_data = Voucher.query.filter_by(
-        username=current_user.username).all()
-=======
     voucher_data = Voucher.query.filter_by(username = current_user.username, status = 1).all()
->>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
     # distinct_cashiers = []
     # for i in range(len(voucher_data)):
     #     if voucher_data[i].cashiername not in distinct_cashiers:
@@ -179,27 +139,18 @@ def uservoucherwallet():
     count = 1
     positions = []
     for key, value in unique_cashier_freq.items():
-        user = User.query.filter_by(username=key).all()
+        user = User.query.filter_by(username = key).all()
         user_pic = user[0].photo
-        positions.append((key, value, count, user_pic))
+        positions.append((key,value,count,user_pic))
         count = count + 1
-    if len(unique_cashier_freq) == 0:
+    if len(unique_cashier_freq) == 0 :
         return render_template('emptywallet.html')
     else:
-        return render_template('wallet.html', data=positions, value=len(positions))
+        return render_template('wallet.html', data=positions, value = len(positions))
 
-
-@app.route('/user/voucherwallet/<string:cashiername>', methods=['GET', 'POST'])
-@login_required
+@app.route('/user/voucherwallet/<string:cashiername>',methods=['GET', 'POST'])
+@login_required 
 def uservoucher(cashiername):
-<<<<<<< HEAD
-    vouchers_owned = Voucher.query.filter_by(
-        username=current_user.username, cashiername=cashiername, status=1).all()
-    user = User.query.filter_by(username=vouchers_owned[0].cashiername).all()
-    user_pic = user[0].photo
-    return render_template('uservoucher.html', data=vouchers_owned, user_pic=user_pic)
-
-=======
     vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1).all()
     if len(vouchers_owned) > 0:
         user = User.query.filter_by(username = vouchers_owned[0].cashiername).all()
@@ -207,82 +158,44 @@ def uservoucher(cashiername):
         return render_template('uservoucher.html', data=vouchers_owned, user_pic = user_pic)
     else:
         return render_template('emptyvoucher.html', data=cashiername, available = 1)
->>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
 
-@app.route('/user/voucherwallet/<string:cashiername>/unavailable', methods=['GET', 'POST'])
-@login_required
+@app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
+@login_required 
 def unavailablevoucher(cashiername):
-<<<<<<< HEAD
-    unavailable_vouchers = Voucher.query.filter(
-        Voucher.status != 1, Voucher.username == current_user.username, Voucher.cashiername == cashiername).all()
-    if len(unavailable_vouchers) == 0:
-        return render_template('emptyvoucher.html', data=cashiername)
-=======
     unavailable_vouchers = Voucher.query.filter(Voucher.status != 1, Voucher.username == current_user.username, Voucher.cashiername==cashiername).all()
     if len(unavailable_vouchers) == 0 :
         return render_template('emptyvoucher.html', data=cashiername, available = 0)
->>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
     else:
         user = User.query.filter_by(username = unavailable_vouchers[0].cashiername).all()
         user_pic = user[0].photo
         return render_template('user_unavailable_voucher.html', data=unavailable_vouchers, user_pic = user_pic)
 
-
-@app.route('/user/voucherwallet/<int:voucherid>', methods=['GET', 'POST'])
-@login_required
+@app.route('/user/voucherwallet/<int:voucherid>',methods=['GET', 'POST'])
+@login_required 
 def voucherqr(voucherid):
-    voucher = Voucher.query.filter_by(id=voucherid)
+    voucher = Voucher.query.filter_by(id = voucherid)
     qr = qrcode.make('{}'.format(str(voucherid)))
     filePath = 'static/qr/voucherqr{}.jpeg'.format(str(voucherid))
     qr.save("app/" + filePath, "JPEG")
-    reply = {'filePath': filePath}
+    reply={'filePath': filePath}
     return make_response(jsonify(reply), 200)
 
-<<<<<<< HEAD
-# @app.route('/user/voucherwallet/<string:cashiername>/testing',methods=['GET'])
-# @login_required
-# def testing(cashiername):
-#     # data = Voucher.query\
-#     #     .join(User)\
-#     #     .filter_by(Voucher.username==User.username).all()
-#     data = select(Voucher).where(
-#                 and_(
-#                     Voucher.cashiername == 'cashier1',
-#                     Voucher.value == 20
-#                 )
-#             )
-#     print(data)
-#     engine = create_engine('sqlite:///site.db')
-#     with engine.connect() as con:
-
-#         rs = con.execute('SELECT * FROM Voucher')
-
-#     for row in rs:
-#         print(row)
-#     return render_template('notyet.html')
-
-
-=======
->>>>>>> 2ea4954fa8f8bd34fb709bcddf639eb591dcd5d9
 @app.route('/voucher/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucher(voucherid):
-    buy_form = BuyForm()
+    buy_form=BuyForm()
     if buy_form.validate_on_submit():
-        voucherData = Vouchercat.query.filter_by(id=voucherid).first()
+        voucherData = Vouchercat.query.filter_by(id=voucherid).first()       
         quantity = buy_form.quantity.data
         if quantity <= voucherData.quantity:
             session['voucherID'] = voucherData.id
             session['quantity'] = quantity
             return redirect(url_for('checkout'))
         else:
-            errorMessage = "Not able to purchase " + \
-                str(quantity) + " vouchers. Only " + \
-                str(voucherData.quantity) + " vouchers available."
+            errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
             return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
     return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form)
-
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
@@ -290,71 +203,65 @@ def checkout():
     quantity = session['quantity']
     coForm = CheckoutForm()
     if coForm.validate_on_submit():
-        errorMessage = []
+        errorMessage=[]
         error = False
-        name = coForm.nameOnCard.data
+        name=coForm.nameOnCard.data
         errorMessage.append("")
-        creditCardNumber = coForm.creditCardNumber.data
-        if len(str(creditCardNumber)) == 16 and isinstance(creditCardNumber, int):
+        creditCardNumber=coForm.creditCardNumber.data
+        if len(str(creditCardNumber))==16 and isinstance(creditCardNumber,int):
             errorMessage.append("")
         else:
             errorMessage.append("Please enter a valid credit card number.")
             error = True
-        expiryMonth = coForm.expirationMonth.data
-        if expiryMonth >= 1 and expiryMonth <= 12:
+        expiryMonth=coForm.expirationMonth.data
+        if expiryMonth>=1 and expiryMonth<=12:
             errorMessage.append("")
         else:
             errorMessage.append("Please enter a valid month")
             error = True
-        expiryYear = coForm.expirationYear.data
-        if expiryYear >= 2021:
+        expiryYear=coForm.expirationYear.data
+        if expiryYear>=2021:
             errorMessage.append("")
         else:
             errorMessage.append("Please enter a valid year")
             error = True
-        cvv = coForm.cvv.data
-        if len(str(cvv)) == 3 and isinstance(cvv, int):
+        cvv=coForm.cvv.data
+        if len(str(cvv))==3 and isinstance(cvv, int):
             errorMessage.append("")
         else:
             errorMessage.append("Please enter a valid cvv number")
             error = True
         if error:
             return render_template('checkout.html', coForm=coForm, errorMessage=errorMessage)
-
+        
         vouchercat = Vouchercat.query.filter_by(id=voucherId).first()
         today = datetime.date.today()
-        epoch_day = datetime.datetime(today.year, today.month, today.day) - datetime.datetime(
-            1970, 1, 1) + datetime.timedelta(days=vouchercat.expirydur+1)
-        voucher_expiry_date = datetime.datetime(
-            1970, 1, 1, 0, 0) + datetime.timedelta(epoch_day.days - 1)
+        epoch_day = datetime.datetime(today.year,today.month,today.day) - datetime.datetime(1970,1,1) + datetime.timedelta(days=vouchercat.expirydur+1)
+        voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(epoch_day.days - 1)
         expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
         # voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate)
-
+        
         vouchercat.quantity = vouchercat.quantity - quantity
         vouchercat.sold = vouchercat.sold + quantity
-
+        
         for i in range(quantity):
-            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days,
-                           value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate))
+            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate))
         db.session.commit()
-        voucher_purchased = Vouchercat.query.filter_by(id=voucherId).all()
+        voucher_purchased = Vouchercat.query.filter_by(id = voucherId).all()
         return render_template('purchase_voucher_confirm.html', quantity=quantity, value=voucher_purchased[0].value, cashiername=voucher_purchased[0].cashiername)
         # return redirect(url_for('uservoucherwallet'))
     return render_template('checkout.html', coForm=coForm)
 
-
 @app.route('/elements')
 def elements():
     return render_template('elements.html')
-
 
 @app.route('/user/userQR')
 @login_required
 def userQR():
     return render_template('anythinglah.html')
 
-
-@app.route('/cashier/home', methods=['GET', 'POST'])
+@app.route('/cashier/home',methods=['GET', 'POST'])
 @login_required
 def cashierhome():
 
@@ -362,7 +269,7 @@ def cashierhome():
     cashier = session["username"]
     cashierdata = Vouchercat.query.filter_by(cashiername=cashier).all()
     revenue = 0
-    sold = 0
+    sold = 0 
     for i in cashierdata:
         revenue += i.sold * i.cost
         sold += i.sold
@@ -372,12 +279,10 @@ def cashierhome():
     chartDic = defaultdict(int)
     for i in voucherdata:
         soldEpoch = i.sold
-        soldDate = datetime.datetime(
-            1970, 1, 1, 0, 0) + datetime.timedelta(soldEpoch - 1)
+        soldDate = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(soldEpoch - 1)
         month = soldDate.month
         year = soldDate.year
-        cost = Vouchercat.query.filter_by(
-            value=i.value, cashiername=cashier).first().cost
+        cost = Vouchercat.query.filter_by(value=i.value, cashiername=cashier).first().cost
         chartDic[month] += cost
         # print(cost)
         # if year not in chartDic:
@@ -387,9 +292,9 @@ def cashierhome():
         # else:
         #     chartDic[year][month] += cost
     # chartDic = dict(sorted(chartDic.items()))
-    chartDic = OrderedDict(sorted(chartDic.items()))
+    chartDic=  OrderedDict(sorted(chartDic.items()))
     # return render_template('test.html', data=chartDic)
-    chartList = []
+    chartList =[]
     # for year, yeardict in chartDic.items():
     #     for month, cost in yeardict.items():
     #         chartList.append( [year, month ,chartDic[year][month]])
@@ -398,13 +303,12 @@ def cashierhome():
     # print(chartList)
     chartList.append(["Month", "Revenue"])
     for key, value in chartDic.items():
-        temp = [key, value]
+        temp = [key,value]
         chartList.append(temp)
 
     return render_template('cashierlanding.html', revenue=revenue, sold=sold, vouchers=cashierdata, chartList=chartList)
 
-
-@app.route('/cashier/manage_vouchers', methods=['GET', 'POST'])
+@app.route('/cashier/manage_vouchers',methods=['GET', 'POST'])
 @login_required
 def manageVouchers():
     cashier = session["username"]
@@ -414,44 +318,35 @@ def manageVouchers():
     # return render_template('cashiervouchers.html', data=voucherdata)
     # return render_template('manageVouchers.html', voucherdata=voucherdata)
 
-
 @app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherUpdate(voucherid):
-    voucherUpdateForm = VoucherUpdate()
+    voucherUpdateForm=VoucherUpdate()
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
-    if request.method == 'GET':
-        voucherUpdateForm.value.data = voucherData.value
-        voucherUpdateForm.cost.data = voucherData.cost
-        voucherUpdateForm.expirydur.data = voucherData.expirydur
-        voucherUpdateForm.quantity.data = voucherData.quantity
-
-    if voucherUpdateForm.validate_on_submit():
-
-        voucherData.value = form.value.data
-        voucherData.cost = form.cost.data
-        voucherData.expirydur = form.expirydur.data
-        voucherData.quantity = form.quantity.data
-
-        db.session.commit()
-        flash('Your account info has been updated', 'success')
-
+    # if voucherUpdate.validate_on_submit():
+    #     pass
+    #     quantity = buy_form.quantity.data
+    #     if quantity <= voucherData.quantity:
+    #         session['voucherID'] = voucherData.id
+    #         session['quantity'] = quantity
+    #         return redirect(url_for('checkout'))
+    #     else:
+    #         errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
+    #         return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
+    db.session.commit()
     return render_template('voucherupdate.html', voucherData=voucherData, updateform=voucherUpdateForm)
-
 
 @app.route('/voucher/delete/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherDelete(voucherid):
     # Send back to cashiervouchers.html with an alert
     voucherDeleted = Vouchercat.query.filter_by(id=voucherid).delete()
-    alertMessage = "$" + str(voucherDeleted.value) + \
-        " Voucher has been deleted"
+    alertMessage = "$" + str(voucherDeleted.value) + " Voucher has been deleted"
     db.session.commit()
     return render_template('', alert=alertMessage)
 
-
 @app.route("/cashier/account", methods=['GET', 'POST'])
-@login_required
+@login_required 
 def cashierprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
@@ -460,19 +355,17 @@ def cashierprofile():
             current_user.photo = picture_file
         current_user.address = form.address.data
         current_user.contactno = form.contactno.data
-        hashed_password = bcrypt.generate_password_hash(
-            form.password.data).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         current_user.password = hashed_password
         db.session.commit()
         flash('Your account info has been updated', 'success')
         return redirect(url_for('userprofile'))
-    # elif request.method == 'GET':
-    image_file = url_for('static', filename='uploads/' + current_user.photo)
+    #elif request.method == 'GET':
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
 
-
 @app.route("/user/account", methods=['GET', 'POST'])
-@login_required
+@login_required 
 def userprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
@@ -481,21 +374,18 @@ def userprofile():
             current_user.photo = picture_file
         current_user.address = form.address.data
         current_user.contactno = form.contactno.data
-        hashed_password = bcrypt.generate_password_hash(
-            form.password.data).decode('utf-8')
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         current_user.password = hashed_password
         db.session.commit()
         flash('Your account info has been updated', 'success')
         return redirect(url_for('userprofile'))
-    # elif request.method == 'GET':
-    image_file = url_for('static', filename='uploads/' + current_user.photo)
+    #elif request.method == 'GET':
+    image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('userprofile.html', title="Profile", image_file=image_file, form=form)
 
-# TODO: once implemented make it login required
-
-
+#TODO: once implemented make it login required
 @app.route('/cashier/scanQR')
-# @login_required
+#@login_required
 def cashierqr():
     return render_template('scanqr.html')
 
@@ -507,7 +397,6 @@ def logoutuser():
     session.clear()
     return redirect(url_for('users'))
 
-
 @app.route("/cashier/logout")
 @login_required
 def logoutcashier():
@@ -516,47 +405,39 @@ def logoutcashier():
     return redirect(url_for('cashier'))
 
 
-# todos:should we check if the login user is a user and not a cashier?
+#todos:should we check if the login user is a user and not a cashier?
 @app.route("/cashier/scanQR/<int:voucherid>", methods=['POST'])
 @login_required
 def voucherclaim(voucherid):
-    voucher = Voucher.query.filter_by(id=voucherid).first()
-    # to prevent exception in datetime.timedelta(voucher.expiry - 1)
-    if voucher is None:
-        reply = {'status': 'invalid voucher',
-                 'cashiername': current_user.username}
+    voucher = Voucher.query.filter_by(id = voucherid).first()
+    if voucher is None: # to prevent exception in datetime.timedelta(voucher.expiry - 1)
+        reply={'status':'invalid voucher', 'cashiername':current_user.username}
         return make_response(jsonify(reply), 401)
-    date = datetime.datetime(1970, 1, 1, 0, 0) + \
-        datetime.timedelta(voucher.expiry - 1)
-    # check if the same user is doing the purchase
-    if voucher.cashiername == current_user.username and voucher.status == 1:
-        reply = {'photo': current_user.photo, 'cashiername': voucher.cashiername,
-                 'value': voucher.value, 'expiry': date.strftime("%d-%b-%Y")}
-        voucher.status = 2
+    date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
+    if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
+        reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
+        voucher.status=2
         db.session.commit()
-        return make_response(jsonify(reply), 200)
-    elif voucher.cashiername != current_user.username:
-        reply = {'status': 'wrong store', 'cashiername': current_user.username}
+        return make_response(jsonify(reply), 200) 
+    elif voucher.cashiername!=current_user.username: 
+        reply={'status':'wrong store', 'cashiername' :current_user.username}
         return make_response(jsonify(reply), 469)
     elif voucher.status == 0:
-        reply = {'status': 'voucher expired',
-                 'cashiername': current_user.username}
+        reply={'status':'voucher expired','cashiername' :current_user.username}
         return make_response(jsonify(reply), 469)
-    elif voucher.status == 1:
-        reply = {'status': 'voucher used alr',
-                 'cashiername': current_user.username}
+    elif voucher.status==1:
+        reply={'status':'voucher used alr', 'cashiername' :current_user.username}
         return make_response(jsonify(reply), 469)
-
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
-    f_name, f_ext = os.path.splitext(form_picture.filename)
-    picture_fn = random_hex + f_ext
-    picture_path = os.path.join(app.root_path, 'static/uploads', picture_fn)
+    f_name, f_ext = os.path.splitext(form_picture.filename) 
+    picture_fn = random_hex + f_ext 
+    picture_path = os.path.join(app.root_path, 'static/uploads', picture_fn) 
     output_size = (125, 125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
-
+    
     i.save(picture_path)
 
     return picture_fn
