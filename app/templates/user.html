@@ -58,11 +58,11 @@
                     {% endif %}
 						</div>
 					</div>
-					<div>
+					<div class = "rememberme">
 						{{ userlogin_form.remember(class="form-check-input") }}
 						{{ userlogin_form.remember.label(class="form-check-label") }}
 					</div>
-					<ul class="actions">
+					<ul class="actions" style="margin-top: 1.5em">
 						<li>{{ userlogin_form.submit(class="btn btn-outline-info") }}</li>
 						<li><a href="#forgot" class="button">Forget Password</a></li>
 					</ul>
