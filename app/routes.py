@@ -69,6 +69,7 @@ def cashier():
         if user and bcrypt.check_password_hash(user.password, cashierlogin_form.password.data) and user.cashier==1:
             login_user(user, remember=cashierlogin_form.remember.data)
             next_page = request.args.get('next')
+            session["username"]=user.username
             return redirect(url_for('cashierhome'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
@@ -238,9 +239,62 @@ def userQR():
 @app.route('/cashier/home',methods=['GET', 'POST'])
 @login_required
 def cashierhome():
-    data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
+    # data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
+    cashier = session["username"]
+    cashierdata = Vouchercat.query.filter_by(cashiername=cashier).all()
+    revenue = 0
+    sold = 0 
+    for i in cashierdata:
+        revenue += i.sold * i.cost
+        sold += i.sold
+    chartData = []
+    chartData.append(['Month', 'Sales'])
+    # voucherdata = Voucher.query.filter_by(cashiername=cashier).order_by(sold)
+    # # make a dictionary of month-year
+    # epoch_day = datetime.datetime(today.year,today.month,today.day) - datetime.datetime(1970,1,1) + datetime.timedelta(days=vouchercat.expirydur+1)
+    # voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(epoch_day.days - 1)
 
-    return render_template('cashierlanding.html', data=data)
+    # # loop through dic. If there is data, add to list.
+    # for i in voucherdata:
+    #     chartData.append(['', ''])
+    chartData=[
+		['Month', 'Sales'],
+		['Jan',  10],
+		['Feb',  11],
+		['Mar',  6],
+		['Apr',  10]
+		]
+    return render_template('cashierlanding.html', revenue=revenue, sold=sold, vouchers=cashierdata, chartData=chartData)
+
+@app.route('/cashier/manage_vouchers',methods=['GET', 'POST'])
+@login_required
+def manageVouchers():
+    cashier = session["username"]
+    voucherdata = Vouchercat.query.filter_by(cashiername=cashier).all()
+    # CHECK WITH WC WHAT DATA HE NEEDS
+    return render_template('manageVouchers.html', voucherdata=voucherdata)
+
+@app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
+@login_required
+def voucherUpdate(voucherid):
+    # buy_form=BuyForm()
+    # if buy_form.validate_on_submit():
+    #     voucherData = Vouchercat.query.filter_by(id=voucherid).first()       
+    #     quantity = buy_form.quantity.data
+    #     if quantity <= voucherData.quantity:
+    #         session['voucherID'] = voucherData.id
+    #         session['quantity'] = quantity
+    #         return redirect(url_for('checkout'))
+    #     else:
+    #         errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
+    #         return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
+    # voucherData = Vouchercat.query.filter_by(id=voucherid).first()
+    return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form)
+
+@app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
+@login_required
+def voucherDelete(voucherid):
+    pass
 
 @app.route("/cashier/account", methods=['GET', 'POST'])
 @login_required 
@@ -300,8 +354,6 @@ def logoutcashier():
     logout_user()
     session.clear()
     return redirect(url_for('cashier'))
-
-
 
 @app.route("/cashier/scanQR/<int:voucherid>", methods=['POST'])
 @login_required
