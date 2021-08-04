@@ -120,7 +120,9 @@ def uservoucherwallet():
     count = 1
     positions = []
     for key, value in unique_cashier_freq.items():
-        positions.append((key,value,count))
+        user = User.query.filter_by(username = key).all()
+        user_pic = user[0].photo
+        positions.append((key,value,count,user_pic))
         count = count + 1
     if len(unique_cashier_freq) == 0 :
         return render_template('emptywallet.html')
@@ -290,8 +292,9 @@ def cashierhome():
 def manageVouchers():
     cashier = session["username"]
     voucherdata = Vouchercat.query.filter_by(cashiername=cashier).all()
+    return render_template('cashiervouchers.html', data=voucherdata)
     # CHECK WITH WC WHAT DATA HE NEEDS
-    return render_template('manageVouchers.html', voucherdata=voucherdata)
+    # return render_template('manageVouchers.html', voucherdata=voucherdata)
 
 @app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
 @login_required

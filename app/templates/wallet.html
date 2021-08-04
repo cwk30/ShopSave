@@ -47,7 +47,7 @@
 <!-- trying -->
 <div class = "cardroot{{ value }}">
 	<ul id="cards">
-		{% for key, value, position in data %}
+		{% for key, value, position, user_pic in data %}
 			<li class="card" id = "card_{{ position }}">
 				<a href="{{url_for('uservoucher', cashiername=key)}}">
 					<div style="margin: 10px 3.5px 0 -20px;" class="card__content">
@@ -57,7 +57,8 @@
 							<p1> {{ value }} </p1>
 						</div>
 						<figure>
-						<img src="https://codyhouse.co/demo-tutorials/stacking-cards/assets/img/img-2.jpg" alt="Image description">
+						<img src="{{url_for('static', filename='uploads/'+user_pic)}}" alt="Image description">
+						
 						</figure>
 					</div>
 				</a>
