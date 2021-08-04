@@ -121,7 +121,9 @@ def uservoucherwallet():
     count = 1
     positions = []
     for key, value in unique_cashier_freq.items():
-        positions.append((key,value,count))
+        user = User.query.filter_by(username = key).all()
+        user_pic = user[0].photo
+        positions.append((key,value,count,user_pic))
         count = count + 1
     if len(unique_cashier_freq) == 0 :
         return render_template('emptywallet.html')
@@ -132,7 +134,9 @@ def uservoucherwallet():
 @login_required 
 def uservoucher(cashiername):
     vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1).all()
-    return render_template('uservoucher.html', data=vouchers_owned)
+    user = User.query.filter_by(username = vouchers_owned[0].cashiername).all()
+    user_pic = user[0].photo
+    return render_template('uservoucher.html', data=vouchers_owned, user_pic = user_pic)
 
 @app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
 @login_required 
@@ -310,6 +314,8 @@ def manageVouchers():
     voucherdata = Vouchercat.query.filter_by(cashiername=cashier).all()
     # CHECK WITH JQ WHAT DATA HE NEEDS
     return render_template('cashiervouchers.html', voucherdata=voucherdata)
+    # return render_template('cashiervouchers.html', data=voucherdata)
+    # return render_template('manageVouchers.html', voucherdata=voucherdata)
 
 @app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
@@ -409,6 +415,8 @@ def voucherclaim(voucherid):
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
     if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
+        voucher.status=2
+        db.session.commit()
         return make_response(jsonify(reply), 200) 
     elif voucher.cashiername!=current_user.username: 
         reply={'status':'wrong store', 'cashiername' :current_user.username}
