@@ -121,7 +121,6 @@ def uservoucherwallet():
     for key, value in unique_cashier_freq.items():
         positions.append((key,value,count))
         count = count + 1
-    # print(unique_cashier_freq)
     if len(unique_cashier_freq) == 0 :
         return render_template('emptywallet.html')
     else:
@@ -131,12 +130,6 @@ def uservoucherwallet():
 @login_required 
 def uservoucher(cashiername):
     vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1).all()
-    # for i in range(len(vouchers_owned)):
-    #     if vouchers_owned[i].expirydate is None:
-    #         voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(vouchers_owned[i].expiry - 1)
-    #         vouchers_owned[i].expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
-    #         db.session.commit()
-    # print('called')
     return render_template('uservoucher.html', data=vouchers_owned)
 
 @app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
