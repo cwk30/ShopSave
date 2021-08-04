@@ -30,10 +30,11 @@
 
 
 <!-- Banner -->
+{% if available == 0 %}
 	<section id="banner" class="major">
 		<div class="inner">
 			<header class="major">
-				<h1>Claimed vouchers</h1>
+				<h1>Claimed Vouchers</h1>
 			</header>
 			<div class="content">
 				<p>There are currently no claimed vouchers from {{ data }}</p>
@@ -43,7 +44,21 @@
 			</div>
 		</div>
 	</section>
-
+{% else %}
+	<section id="banner" class="major">
+		<div class="inner">
+			<header class="major">
+				<h1>Available Vouchers</h1>
+			</header>
+			<div class="content">
+				<p>You have not purchase any vouchers from {{ data }}</p>
+				<ul class="actions">
+					<li><a href="{{url_for('userhome')}}" class="button next scrolly">Purchase vouchers here!</a></li>
+				</ul>
+			</div>
+		</div>
+	</section>
+{% endif %}
 <!-- Main -->
 	<!-- <div id="main"> -->
 		<!-- One -->

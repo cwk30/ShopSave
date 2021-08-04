@@ -1,0 +1,85 @@
+{% extends "cashierlayout.html" %}
+
+{% block content %}
+
+<!-- Main -->
+<div id="main" class="alt">
+
+	<!-- One -->
+		<section id="one">
+			<div class="inner">
+				<header class="major">
+					<h1>Create Vouchers</h1>
+				</header>
+
+				<form method="POST" action="" enctype="multipart/form-data">
+					{{ form.hidden_tag() }}
+					<div class="row gtr-uniform">
+						<div class="col-6 col-12-xsmall">
+							{{ form.value.label(class="form-control-label") }}
+							{% if form.value.errors %}  
+								{{ form.value(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.value.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ form.value(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+						<div class="col-6 col-12-xsmall">
+							{{ form.cost.label(class="form-control-label") }}
+							{% if form.cost.errors %} 
+								{{ form.cost(class="form-control form-control-lg is-invalid") }}
+								<div class="invalid-feedback">
+									{% for error in form.cost.errors %}
+										<span>{{ error }}</span> 
+									{% endfor %}
+								</div>
+							{% else %}
+								{{ form.cost(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+
+						<div class="col-6 col-12-xsmall">
+							{{ form.expirydur.label(class="form-control-label") }}
+							{% if form.expirydur.errors %}  
+								{{ form.expirydur(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.expirydur.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ form.expirydur(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+						<div class="col-6 col-12-xsmall">
+							{{ form.quantity.label(class="form-control-label") }}
+							{% if form.quantity.errors %}  
+								{{ form.quantity(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback">
+								{% for error in form.quantity.errors %}
+									<span>{{ error }}</span> 
+								{% endfor %}
+							</div>
+							{% else %}
+								{{ form.quantity(class="form-control form-control-lg") }}
+							{% endif %}
+						</div>
+					</div>
+					<br>
+					<br>
+				<ul class="actions">
+					{{ form.submit(class="btn btn-outline-info") }}
+				</ul>
+				</form>
+			</div>
+		</section>
+
+</div>
+
+
+
+{% endblock %}

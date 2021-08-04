@@ -7,7 +7,7 @@ from flask import (render_template, jsonify, make_response, url_for, flash, redi
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_, select, create_engine
 from flask_sqlalchemy import Pagination
-from app.forms import (UserRegistrationForm, VoucherUpdate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
+from app.forms import (UserRegistrationForm, VoucherUpdate,VoucherCreate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
 from app.models import (User, Voucher, Vouchercat)
 from flask import request
 import qrcode
@@ -125,7 +125,7 @@ def uservoucherstore(cashiername):
 @app.route('/user/voucherwallet', methods=['GET', 'POST'])
 @login_required
 def uservoucherwallet():
-    voucher_data = Voucher.query.filter_by(username = current_user.username).all()
+    voucher_data = Voucher.query.filter_by(username = current_user.username, status = 1).all()
     # distinct_cashiers = []
     # for i in range(len(voucher_data)):
     #     if voucher_data[i].cashiername not in distinct_cashiers:
@@ -152,18 +152,23 @@ def uservoucherwallet():
 @login_required 
 def uservoucher(cashiername):
     vouchers_owned = Voucher.query.filter_by(username = current_user.username, cashiername=cashiername, status = 1).all()
-    user = User.query.filter_by(username = vouchers_owned[0].cashiername).all()
-    user_pic = user[0].photo
-    return render_template('uservoucher.html', data=vouchers_owned, user_pic = user_pic)
+    if len(vouchers_owned) > 0:
+        user = User.query.filter_by(username = vouchers_owned[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('uservoucher.html', data=vouchers_owned, user_pic = user_pic)
+    else:
+        return render_template('emptyvoucher.html', data=cashiername, available = 1)
 
 @app.route('/user/voucherwallet/<string:cashiername>/unavailable',methods=['GET', 'POST'])
 @login_required 
 def unavailablevoucher(cashiername):
     unavailable_vouchers = Voucher.query.filter(Voucher.status != 1, Voucher.username == current_user.username, Voucher.cashiername==cashiername).all()
     if len(unavailable_vouchers) == 0 :
-        return render_template('emptyvoucher.html', data=cashiername)
+        return render_template('emptyvoucher.html', data=cashiername, available = 0)
     else:
-        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers)
+        user = User.query.filter_by(username = unavailable_vouchers[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers, user_pic = user_pic)
 
 @app.route('/user/voucherwallet/<int:voucherid>',methods=['GET', 'POST'])
 @login_required 
@@ -174,28 +179,6 @@ def voucherqr(voucherid):
     qr.save("app/" + filePath, "JPEG")
     reply={'filePath': filePath}
     return make_response(jsonify(reply), 200)
-
-# @app.route('/user/voucherwallet/<string:cashiername>/testing',methods=['GET'])
-# @login_required 
-# def testing(cashiername):
-#     # data = Voucher.query\
-#     #     .join(User)\
-#     #     .filter_by(Voucher.username==User.username).all()
-#     data = select(Voucher).where(
-#                 and_(
-#                     Voucher.cashiername == 'cashier1',
-#                     Voucher.value == 20
-#                 )
-#             )
-#     print(data)
-#     engine = create_engine('sqlite:///site.db')
-#     with engine.connect() as con:
-
-#         rs = con.execute('SELECT * FROM Voucher')
-
-#     for row in rs:
-#         print(row)
-#     return render_template('notyet.html')
 
 @app.route('/voucher/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
@@ -212,13 +195,21 @@ def voucher(voucherid):
             errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
             return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
-    return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form)
+    cashier = User.query.filter_by(username = voucherData.cashiername).first()
+    cashier_pic = cashier.photo    
+    return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, cashier_pic=cashier_pic)
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     voucherId = session['voucherID']
     quantity = session['quantity']
     coForm = CheckoutForm()
+    if request.method == 'GET':
+        coForm.nameOnCard.data = "John Davis"
+        coForm.creditCardNumber.data = 4119528685973112
+        coForm.expirationMonth.data = 12
+        coForm.expirationYear.data = 2024
+        coForm.cvv.data = 621
     if coForm.validate_on_submit():
         errorMessage=[]
         error = False
@@ -341,21 +332,36 @@ def manageVouchers():
 @app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherUpdate(voucherid):
-    voucherUpdateForm=VoucherUpdate()
+    voucherUpdateForm = VoucherUpdate()
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
-    # if voucherUpdate.validate_on_submit():
-    #     pass
-    #     quantity = buy_form.quantity.data
-    #     if quantity <= voucherData.quantity:
-    #         session['voucherID'] = voucherData.id
-    #         session['quantity'] = quantity
-    #         return redirect(url_for('checkout'))
-    #     else:
-    #         errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
-    #         return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
-    db.session.commit()
+    if request.method == 'GET':
+        voucherUpdateForm.value.data = voucherData.value
+        voucherUpdateForm.cost.data = voucherData.cost
+        voucherUpdateForm.expirydur.data = voucherData.expirydur
+        voucherUpdateForm.quantity.data = voucherData.quantity
+
+    if voucherUpdateForm.validate_on_submit():
+
+        voucherData.value = voucherUpdateForm.value.data
+        voucherData.cost = voucherUpdateForm.cost.data
+        voucherData.expirydur = voucherUpdateForm.expirydur.data
+        voucherData.quantity = voucherUpdateForm.quantity.data
+
+        db.session.commit()
+        flash('Your voucher has been updated', 'success')
+
     return render_template('voucherupdate.html', voucherData=voucherData, updateform=voucherUpdateForm)
 
+@app.route('/cashier/voucher/create',methods=['GET','POST'])
+@login_required
+def voucherCreate():
+    voucherCreateForm = VoucherCreate()
+    if voucherCreateForm.validate_on_submit():
+        vouchercat = Vouchercat(value=voucherCreateForm.value.data, cost=voucherCreateForm.cost.data,expirydur=voucherCreateForm.expirydur.data,quantity=voucherCreateForm.quantity.data)
+        db.session.commit()
+        flash('Your voucher has been created', 'success')
+    return render_template('vouchercreate.html', form=voucherCreateForm) 
+    
 @app.route('/voucher/delete/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherDelete(voucherid):
