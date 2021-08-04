@@ -33,21 +33,21 @@
 	<section id="banner" class="major">
 		<div class="inner">
 			<header class="major">
-				<h1>Hi, {{ current_user.username }}</h1>
+				<h1>Claimed vouchers</h1>
 			</header>
 			<div class="content">
-				<p>Check out the available vouchers here!</p>
+				<p>There are currently no claimed vouchers from {{ data }}</p>
 				<ul class="actions">
-					<li><a href="{{url_for('userhome')}}" class="button next scrolly">Start saving</a></li>
+					<li><a href="{{url_for('userhome')}}" class="button next scrolly">Purchase vouchers here!</a></li>
 				</ul>
 			</div>
 		</div>
 	</section>
 
 <!-- Main -->
-	<div id="main">
+	<!-- <div id="main"> -->
 		<!-- One -->
-			<section id="one" class="tiles">
+			<!-- <section id="one" class="tiles">
 				<article>
 					<header class="major fit">
 						<h3><a>There are no vouchers used or expired</a></h3>
@@ -56,5 +56,5 @@
 						</ul>
 					</header>
 				</article>
-			</section>
+			</section> -->
 {% endblock %}
