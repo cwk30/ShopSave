@@ -179,7 +179,7 @@ async function onScanSuccess(decodedText, decodedResult) {
 	console.log(typeof(decodedText));
 	var numbers = /^[0-9]+$/;
 	processScanningJob = true; // set scanning job to true
-	if (typeof decodedText === 'string' && !decodedText.match(numbers)) { // check if the qr id is integer
+	if ((typeof decodedText != 'string') || (typeof decodedText === 'string' && !decodedText.match(numbers))) { // check if the qr id is integer
 		failureNotification("Please ensure you have the valid Qr code.", "Foreign Qr Code Detected");
 	}
 	else { 
