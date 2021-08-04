@@ -21,9 +21,9 @@
 				
 					{% with messages = get_flashed_messages() %}
 					{% if messages %}
-						<ul class=flashes>
+						<ul class=flashes style="width: 100%; margin:0 auto;">
 						{% for message in messages %}
-						<li>{{ message }}</li>
+						<div><b>{{ message }}</b></div>
 						{% endfor %}
 						</ul>
 					{% endif %}
