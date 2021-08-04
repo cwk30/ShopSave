@@ -15,21 +15,25 @@
 							</div>
 							{{ coForm.nameOnCard.label(class="form-control-label") }}
 							{{ coForm.nameOnCard(class="form-control form-control-lg is-invalid") }}
+							<br>
 							<div class="invalid-feedback">
 								<span style="color:red">{{ errorMessage[1] }}</span> 
 							</div>
 							{{ coForm.creditCardNumber.label(class="form-control-label") }}
 							{{ coForm.creditCardNumber(class="form-control form-control-lg is-invalid") }}
+							<br>
 							<div class="invalid-feedback">
 								<span style="color:red">{{ errorMessage[2] }}</span> 
 							</div>
 							{{ coForm.expirationMonth.label(class="form-control-label") }}
 							{{ coForm.expirationMonth(class="form-control form-control-lg is-invalid") }}
+							<br>
 							<div class="invalid-feedback">
 								<span style="color:red">{{ errorMessage[3] }}</span> 
 							</div>
 							{{ coForm.expirationYear.label(class="form-control-label") }}
-							{{ coForm.expirationYear(class="form-control form-control-lg is-invalid") }}							
+							{{ coForm.expirationYear(class="form-control form-control-lg is-invalid") }}
+							<br>							
 							<div class="invalid-feedback">
 								<span style="color:red">{{ errorMessage[4] }}</span> 
 							</div>
@@ -39,16 +43,16 @@
 						{% else %}
 							{{ coForm.nameOnCard.label(class="form-control-label") }}
 							{{ coForm.nameOnCard(class="form-control form-control-lg") }}
-
+							<br>
 							{{ coForm.creditCardNumber.label(class="form-control-label") }}
 							{{ coForm.creditCardNumber(class="form-control form-control-lg") }}
-
+							<br>
 							{{ coForm.expirationMonth.label(class="form-control-label") }}
 							{{ coForm.expirationMonth(class="form-control form-control-lg") }}
-
+							<br>
 							{{ coForm.expirationYear.label(class="form-control-label") }}
 							{{ coForm.expirationYear(class="form-control form-control-lg") }}							
-
+							<br>
 							{{ coForm.cvv.label(class="form-control-label") }}
 							{{ coForm.cvv(class="form-control form-control-lg") }}
 						{% endif %}

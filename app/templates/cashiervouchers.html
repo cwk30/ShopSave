@@ -1,0 +1,56 @@
+{% extends "cashierlayout.html" %}
+
+{% block content %}
+
+<!-- Nav -->
+<div class="container">
+	<input type="radio" name="s" id="home" checked>
+	<input type="radio" name="s" id="code">
+	<input type="radio" name="s" id="profile">
+	<nav>
+		<ul>
+			<label class="home" for="home">
+				<a href="{{url_for('cashierhome')}}">
+					<i class='bx bx-home'></i>
+				</a>
+			</label>
+			<label class="code" for="code">
+				<a href="{{url_for('cashierqr')}}">
+					<i class='bx bx-qr'></i>
+				</a>
+			</label>
+			<label class="profile" for="profile">
+				<a href="{{url_for('cashierprofile')}}">
+					<i class='bx bx-user'></i>
+				</a>
+			</label>
+		</ul>
+	</nav>
+</div>
+
+<!-- Banner -->
+	<section id="banner" class="major">
+		<div class="inner">
+			<header class="major">
+				<h1>Hi, <a href="{{url_for('cashierprofile')}}">{{ current_user.username }}</a></h1>
+			</header>
+			<div class="content">
+				<p>Begin your business journey today</p>
+				<ul class="actions">
+					<li><a href="#one" class="button next scrolly">Customise now</a></li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+<!-- Main -->
+	<div id="main">
+
+		<!-- One -->
+			<section id="one" class="tiles">
+				<ul class="actions fit">
+					<li>Add Vouchers<a href="#" class="button primary fit">Create</a></li>
+					<li>View<a href="#" class="button primary fit">Update</a></li>
+				</ul>
+			</section>
+{% endblock %}
