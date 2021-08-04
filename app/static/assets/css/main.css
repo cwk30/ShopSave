@@ -4712,11 +4712,12 @@ ul.loginactions{
   display: flex;
   margin: 0 0 20px 0 ;
   justify-content: space-around;
+  height:200px;
 }
 
 
 .profilepic img{
-  max-width: 70%;
+  object-fit:fill;
 }
 
 .editpic {
