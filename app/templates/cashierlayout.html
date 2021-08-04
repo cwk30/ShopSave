@@ -8,6 +8,7 @@
 		<link rel="stylesheet" href="{{url_for('static', filename='assets/css/main.css')}}" />
 		<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 		<noscript><link rel="stylesheet" href="{{url_for('static', filename='assets/css/noscript.css')}}" /></noscript>
+		{% block javascript %}{% endblock %}
 	</head>
 	<body class="is-preload">
 		<!-- Nav -->
