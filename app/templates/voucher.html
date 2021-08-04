@@ -72,10 +72,10 @@
 					</div>
 
 				<!-- Contact -->
-				<form method="POST" action="">
+				<form method="POST" action="" >
 					{{ buy_form.hidden_tag() }}
-					<div class="fields">
-						<div class="field half">
+					<div class="fieldsbutton">
+						<div class="quant">
 							{{ buy_form.quantity.label(class="form-control-label") }}
 							{% if errorMessage %}  
 								{{ buy_form.quantity(class="form-control form-control-lg is-invalid") }}
@@ -86,10 +86,13 @@
 								{{ buy_form.quantity(class="form-control form-control-lg") }}
 							{% endif %}
 						</div>
+						<div class = "buy-button">
+							<ul class="actions">
+								{{ buy_form.submit(class="btn btn-outline-info") }}
+							</ul>
+						</div>
 					</div>
-				<ul class="actions">
-					{{ buy_form.submit(class="btn btn-outline-info") }}
-				</ul>
+
 				</form>
 			</div>
 		
