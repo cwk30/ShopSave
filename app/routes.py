@@ -7,7 +7,7 @@ from flask import (render_template, jsonify, make_response, url_for, flash, redi
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_, select, create_engine
 from flask_sqlalchemy import Pagination
-from app.forms import (UserRegistrationForm, VoucherUpdate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
+from app.forms import (UserRegistrationForm, VoucherUpdate,VoucherCreate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
 from app.models import (User, Voucher, Vouchercat)
 from flask import request
 import qrcode
@@ -88,20 +88,38 @@ def cashier():
 @login_required 
 def userhome():
     data = Vouchercat.query.filter(Vouchercat.quantity>0).all()
-    distinct_cashiers = []
+    # distinct_cashiers = []
+    # for i in range(len(data)):
+    #     if data[i].cashiername not in distinct_cashiers:
+    #         distinct_cashiers.append(data[i].cashiername)
+    # join = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()
+    # return render_template('test.html', data=join)
+
+    # voucher_data = Voucher.query.filter_by(username = current_user.username).all()
+    unique_cashier_freq = {}
     for i in range(len(data)):
-        if data[i].cashiername not in distinct_cashiers:
-            distinct_cashiers.append(data[i].cashiername)
-    # data = Vouchercat.query.join(User, Vouchercat.cashiername==User.username, isouter=True).all()  
-    # print(data)
-    return render_template('userlanding.html', data=distinct_cashiers)
-    # return render_template('test.html', data=data)
+        if data[i].cashiername not in unique_cashier_freq:
+            unique_cashier_freq[data[i].cashiername] = 1
+        else:
+            unique_cashier_freq[data[i].cashiername] += 1
+    positions = []
+    for name, count in unique_cashier_freq.items():
+        user = User.query.filter_by(username = name).first()
+        user_pic = user.photo
+        positions.append((name,count,user_pic))
+    return render_template('userlanding.html', data=positions)
 
 @app.route('/user/voucherstore/<string:cashiername>',methods=['GET', 'POST'])
 @login_required 
 def uservoucherstore(cashiername):
     vouchers_on_sale = Vouchercat.query.filter_by(cashiername = cashiername).all()
-    return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername)
+    if len(vouchers_on_sale) > 0:
+        user = User.query.filter_by(username = vouchers_on_sale[0].cashiername).first()
+        user_pic = user.photo
+        return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername, user_pic=user_pic)
+    else:
+        emptyMessage = "This store has no vouchers for sale."
+        return render_template('uservoucherstore.html', data=vouchers_on_sale, name = cashiername, emptyMessage=emptyMessage)
     # return render_template('test.html', data=data)
 
 @app.route('/user/voucherwallet', methods=['GET', 'POST'])
@@ -148,7 +166,9 @@ def unavailablevoucher(cashiername):
     if len(unavailable_vouchers) == 0 :
         return render_template('emptyvoucher.html', data=cashiername, available = 0)
     else:
-        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers)
+        user = User.query.filter_by(username = unavailable_vouchers[0].cashiername).all()
+        user_pic = user[0].photo
+        return render_template('user_unavailable_voucher.html', data=unavailable_vouchers, user_pic = user_pic)
 
 @app.route('/user/voucherwallet/<int:voucherid>',methods=['GET', 'POST'])
 @login_required 
@@ -301,21 +321,36 @@ def manageVouchers():
 @app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherUpdate(voucherid):
-    voucherUpdateForm=VoucherUpdate()
+    voucherUpdateForm = VoucherUpdate()
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
-    # if voucherUpdate.validate_on_submit():
-    #     pass
-    #     quantity = buy_form.quantity.data
-    #     if quantity <= voucherData.quantity:
-    #         session['voucherID'] = voucherData.id
-    #         session['quantity'] = quantity
-    #         return redirect(url_for('checkout'))
-    #     else:
-    #         errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
-    #         return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
-    db.session.commit()
+    if request.method == 'GET':
+        voucherUpdateForm.value.data = voucherData.value
+        voucherUpdateForm.cost.data = voucherData.cost
+        voucherUpdateForm.expirydur.data = voucherData.expirydur
+        voucherUpdateForm.quantity.data = voucherData.quantity
+
+    if voucherUpdateForm.validate_on_submit():
+
+        voucherData.value = voucherUpdateForm.value.data
+        voucherData.cost = voucherUpdateForm.cost.data
+        voucherData.expirydur = voucherUpdateForm.expirydur.data
+        voucherData.quantity = voucherUpdateForm.quantity.data
+
+        db.session.commit()
+        flash('Your voucher has been updated', 'success')
+
     return render_template('voucherupdate.html', voucherData=voucherData, updateform=voucherUpdateForm)
 
+@app.route('/cashier/voucher/create',methods=['GET','POST'])
+@login_required
+def voucherCreate():
+    voucherCreateForm = VoucherCreate()
+    if voucherCreateForm.validate_on_submit():
+        vouchercat = Vouchercat(value=voucherCreateForm.value.data, cost=voucherCreateForm.cost.data,expirydur=voucherCreateForm.expirydur.data,quantity=voucherCreateForm.quantity.data)
+        db.session.commit()
+        flash('Your voucher has been created', 'success')
+    return render_template('vouchercreate.html', form=voucherCreateForm) 
+    
 @app.route('/voucher/delete/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
 def voucherDelete(voucherid):
@@ -422,9 +457,7 @@ def save_picture(form_picture):
 
     return picture_fn
 
-@app.errorhandler(Exception)
-def server_error(err):
-    app.logger.exception(err)
-    return unauthorized_callback()
-    # return render_template('test.html', data=err)
-    # return "exception", 500
+# @app.errorhandler(Exception)
+# def server_error(err):
+#     app.logger.exception(err)
+#     return unauthorized_callback()

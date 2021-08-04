@@ -111,4 +111,12 @@ class VoucherUpdate(FlaskForm):
     expirydur = IntegerField("Expiry Duration", validators=[Required()])
     quantity = IntegerField("Quantity", validators=[Required()])
     submit = SubmitField('Update')
+    
+class VoucherCreate(FlaskForm):
+    value = IntegerField("Voucher Value", validators=[Required()])
+    transfer = BooleanField('Transferable?')
+    cost = IntegerField("Cost Price", validators=[Required()])
+    expirydur = IntegerField("Expiry Duration", validators=[Required()])
+    quantity = IntegerField("Quantity", validators=[Required()])
+    submit = SubmitField('Create')
 
