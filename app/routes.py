@@ -389,6 +389,8 @@ def voucherclaim(voucherid):
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
     if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
+        voucher.status=2
+        db.session.commit()
         return make_response(jsonify(reply), 200) 
     elif voucher.cashiername!=current_user.username: 
         reply={'status':'wrong store', 'cashiername' :current_user.username}
