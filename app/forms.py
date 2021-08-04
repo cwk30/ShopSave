@@ -48,12 +48,17 @@ class UserUpdateAccountForm(FlaskForm):
 class UpdateAccountForm(FlaskForm):
     
     address = StringField("Address", validators=[]) 
-    password = PasswordField('Password', validators=[Required()]) 
-    confirm_password = PasswordField('Confirm Password', validators=[Required(), EqualTo('password')])
+    password = PasswordField('Password*', validators=[Required()]) 
+    confirm_password = PasswordField('Confirm Password*', validators=[Required(), EqualTo('password')])
     photo = FileField('Upload Photo', validators=[FileAllowed(['jpg', 'png'])])
-    contactno = IntegerField("Contact No.", validators=[])
+    contactno = IntegerField("Contact No.*", validators=[])
     
     submit = SubmitField('Update') 
+
+    def validate_contactno(self, contactno):
+        user = User.query.filter_by(contactno=contactno.data).first() 
+        if user and contactno!=current_user.contactno:
+            raise ValidationError('That contact no is already registered. Please choose another.')    
 
 class CashierRegistrationForm(FlaskForm):
     username =  StringField("Business Name", validators=[Required(), Length(min=2, max=20)])

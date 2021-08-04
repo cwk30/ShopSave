@@ -51,7 +51,6 @@
 
 					<!-- Main -->
 						<div id="main" class="alt">
-
 							<!-- One -->
 								<section id="one">
 									<div class="inner">
@@ -59,11 +58,29 @@
 											<h1>Scan QR</h1>
 										</header>
 										<div id="qr-reader" style="width:100%">
-
 										</div>
+
 									</div>
 								</section>
-
+								<template id="my-template">
+									<swal-title>
+									  Save changes to "Untitled 1" before closing?
+									</swal-title>
+									<swal-icon type="warning" color="red"></swal-icon>
+									<swal-button type="confirm">
+									  Save As
+									</swal-button>
+									<swal-button type="cancel">
+									  Cancel
+									</swal-button>
+									<swal-button type="deny">
+									  Close without Saving
+									</swal-button>
+									<swal-param name="allowEscapeKey" value="false" />
+									<swal-param
+									  name="customClass"
+									  value='{ "popup": "my-popup" }' />
+								  </template>
 						</div>
 
 	<!-- Footer -->
@@ -91,13 +108,10 @@
 <script src="{{url_for('static', filename='assets/js/util.js')}}"></script>
 <script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
 <script src="https://unpkg.com/html5-qrcode@2.0.9/dist/html5-qrcode.min.js"></script>
-
-<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
 
-
+let processScanningJob = false;
 async function makeQrAuthenticationAPIcall(qrId) {
 	console.log('api resquest made');
 	const endpoint = '/cashier/scanQR/' + qrId;
@@ -108,16 +122,14 @@ async function makeQrAuthenticationAPIcall(qrId) {
     }
   });
   if (response.status === 200) {
-	const jsonResponse = await response.json(); // check if we need to await again
-  	console.log(jsonResponse);
-	toastr.success('Voucher of $' + jsonResponse.value + ' has been claimed.');
-	return jsonResponse;
+		const jsonResponse = await response.json(); // check if we need to await again
+		successNotification(jsonResponse.cashiername, jsonResponse.value)
   } else {
-	console.log(response);
-	console.log(response.status, response.statusText);
-	const jsonResponse = await response.json(); // check if we need to await again
-	console.log(jsonResponse);
-	toastr.error(jsonResponse.status);
+		console.log(response);
+		console.log(response.status, response.statusText);
+		const jsonResponse = await response.json(); // check if we need to await again
+		console.log(jsonResponse);
+		failureNotification(jsonResponse.status, jsonResponse.cashiername);
   }
 }
 //TODOS: remove dummy function for api testing
@@ -128,23 +140,60 @@ function validCall() {
 function inValidCall() {
 	makeQrAuthenticationAPIcall(2);
 }
-$( document ).ready(function() {
+// icon : warning, error, success, info, and question
+function resetApiCall() {
+	processScanningJob = false;
+}
+
+function successNotification(cashierName, moneyValue) {
+	console.log(cashierName, moneyValue);
+	Swal.fire({
+	title: cashierName,
+	icon: 'success',
+	text: `Voucher of $${moneyValue} has been claimed!`,
+	confirmButtonText: '<div style="margin-top:-10px;" id="confirmDiv"><i class="fa fa-thumbs-up"></i> Ok</div>',
+	})
+	document.getElementById("confirmDiv").addEventListener("click", resetApiCall);
+}
+function failureNotification(textMessage, title) {
+	Swal.fire({
+	title: title,
+	icon: 'error',
+	text: textMessage,
+	showCancelButton: true,
+	showConfirmButton:false,
+	cancelButtonText: '<div style="margin-top:-10px;" id="cancelDiv"><i class="fas fa-exclamation"></i> Ok</div>',
+	})
+	document.getElementById("cancelDiv").addEventListener("click", resetApiCall);
+}
+
+
+$(document ).ready(function() {
+
 async function onScanSuccess(decodedText, decodedResult) {
-	toastr.info('Validating QR Code');
     console.log(`Code scanned = ${decodedText}`, decodedResult);
-	await makeQrAuthenticationAPIcall(decodedText);
+	if (processScanningJob) { // if there is a scanning job, dont do anything
+		return ;
+	}
+	console.log(typeof(decodedText));
+	var numbers = /^[0-9]+$/;
+	processScanningJob = true; // set scanning job to true
+	if (typeof decodedText === 'string' && !decodedText.match(numbers)) { // check if the qr id is integer
+		failureNotification("Please ensure you have the valid Qr code.", "Foreign Qr Code Detected");
+	}
+	else { 
+		await makeQrAuthenticationAPIcall(decodedText);
+	}	
 }
 
 var html5QrcodeScanner = new Html5QrcodeScanner(
 	"qr-reader", { fps: 10, qrbox: 250 });
 html5QrcodeScanner.render(onScanSuccess );
-
 var elements = $('a');
 
 // go through the elements and find the one with the value
 elements.each(function(index, domElement) {
     var $element = $(domElement);
-
     // does the element have the text we're looking for?
     if ($element.text() === "Code Scanner") {
         $element.hide();
@@ -166,7 +215,7 @@ function hideButton(buttonName) {
 hideButton("Request Camera Permissions");
 document.getElementById('qr-reader__status_span').style.display = "none";
 
-var delayInMilliseconds = 820; //1 second
+var delayInMilliseconds = 1000; //1 second
 
 setTimeout(function() {
 	hideButton("Start Scanning")

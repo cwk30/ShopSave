@@ -13,6 +13,14 @@ from flask import request
 import qrcode
 import datetime
 
+def validate_image(stream):
+    header = stream.read(512)  # 512 bytes should be enough for a header check
+    stream.seek(0)  # reset stream pointer
+    format = imghdr.what(None, header)
+    if not format:
+        return None
+    return '.' + (format if format != 'jpeg' else 'jpg')
+
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     return redirect('/')
@@ -214,14 +222,21 @@ def checkout():
         if error:
             return render_template('checkout.html', coForm=coForm, errorMessage=errorMessage)
         
-        vouchercat = Vouchercat.query.filter_by(id=voucherId)
-
-        voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(vouchers_owned[i].expiry - 1)
-        vouchers_owned[i].expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
-        voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=expiry, value=value, transfer=transfer, status=status, expirydate=expirydate)
-        db.session.add(voucher)
+        vouchercat = Vouchercat.query.filter_by(id=voucherId).first()
+        today = datetime.date.today()
+        epoch_day = datetime.datetime(today.year,today.month,today.day) - datetime.datetime(1970,1,1) + datetime.timedelta(days=vouchercat.expirydur+1)
+        voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(epoch_day.days - 1)
+        expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
+        # voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate)
+        
+        vouchercat.quantity = vouchercat.quantity - quantity
+        vouchercat.sold = vouchercat.sold + quantity
+        
+        for i in range(quantity):
+            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate))
         db.session.commit()
-        return render_template('test.html', data="buyyyy")
+        # return render_template('test.html', data=quantity)
+        return redirect(url_for('uservoucherwallet'))
     return render_template('checkout.html', coForm=coForm)
 
 @app.route('/elements')
@@ -246,7 +261,7 @@ def cashierprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
-            picture_file = save_picture(form.picture.data)
+            picture_file = save_picture(form.photo.data)
             current_user.photo = picture_file
         current_user.address = form.address.data
         current_user.contactno = form.contactno.data
@@ -254,7 +269,7 @@ def cashierprofile():
         current_user.password = hashed_password
         db.session.commit()
         flash('Your account info has been updated', 'success')
-        return redirect(url_for('account'))
+        return redirect(url_for('userprofile'))
     #elif request.method == 'GET':
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('cashierprofile.html', title="Profile", image_file=image_file, form=form)
@@ -265,7 +280,7 @@ def userprofile():
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.photo.data:
-            picture_file = save_picture(form.picture.data)
+            picture_file = save_picture(form.photo.data)
             current_user.photo = picture_file
         current_user.address = form.address.data
         current_user.contactno = form.contactno.data
@@ -273,7 +288,7 @@ def userprofile():
         current_user.password = hashed_password
         db.session.commit()
         flash('Your account info has been updated', 'success')
-        return redirect(url_for('account'))
+        return redirect(url_for('userprofile'))
     #elif request.method == 'GET':
     image_file = url_for('static', filename='uploads/' + current_user.photo) 
     return render_template('userprofile.html', title="Profile", image_file=image_file, form=form)
@@ -300,27 +315,27 @@ def logoutcashier():
     return redirect(url_for('cashier'))
 
 
-
+#todos:should we check if the login user is a user and not a cashier?
 @app.route("/cashier/scanQR/<int:voucherid>", methods=['POST'])
 @login_required
 def voucherclaim(voucherid):
     voucher = Voucher.query.filter_by(id = voucherid).first()
     if voucher is None: # to prevent exception in datetime.timedelta(voucher.expiry - 1)
-        reply={'status':'invalid voucher'}
+        reply={'status':'invalid voucher', 'cashiername':current_user.username}
         return make_response(jsonify(reply), 401)
     date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(voucher.expiry - 1)
     if voucher.cashiername==current_user.username and voucher.status==1: # check if the same user is doing the purchase
         reply = {'photo':current_user.photo ,'cashiername':voucher.cashiername,'value':voucher.value,'expiry':date.strftime("%d-%b-%Y")}
         return make_response(jsonify(reply), 200) 
     elif voucher.cashiername!=current_user.username: 
-        reply={'status':'wrong store'}
-        return make_response(jsonify(reply),469)
-    elif voucher.status==0:
-        reply={'status':'voucher expired'}
-        return make_response(jsonify(reply),469)
+        reply={'status':'wrong store', 'cashiername' :current_user.username}
+        return make_response(jsonify(reply), 469)
+    elif voucher.status == 0:
+        reply={'status':'voucher expired','cashiername' :current_user.username}
+        return make_response(jsonify(reply), 469)
     elif voucher.status==1:
-        reply={'status':'voucher used alr'}
-        return make_response(jsonify(reply),469)
+        reply={'status':'voucher used alr', 'cashiername' :current_user.username}
+        return make_response(jsonify(reply), 469)
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
