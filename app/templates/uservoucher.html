@@ -113,14 +113,18 @@
 <!-- Main -->
 	<div id="main">
 		<section id="one">
-			<div class="row gtr-200">
+			<!-- <div class="row gtr-200">
 				<div class="col-6 col-12-medium">
 					<ul class="pagination">
 						<li><a href="#one" class="button scrolly">Available</a></li>
 						<li><a href="{{url_for('unavailablevoucher', cashiername=data[0].cashiername)}}" class="button scrolly"> Claimed </a></li>
 					</ul>
 				</div>
-			</div>
+			</div> -->
+			<ul class="actions fit">
+				<li><a href="#one" class="button primary fit">Available</a></li>
+				<li><a href="{{url_for('unavailablevoucher', cashiername=data[0].cashiername)}}" class="button fit">Claimed</a></li>
+			</ul>
 		</section>
 		<!-- One -->
 			<section id="one" class="tiles">
