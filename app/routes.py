@@ -440,3 +440,10 @@ def save_picture(form_picture):
     i.save(picture_path)
 
     return picture_fn
+
+@app.errorhandler(Exception)
+def server_error(err):
+    app.logger.exception(err)
+    return unauthorized_callback()
+    # return render_template('test.html', data=err)
+    # return "exception", 500
