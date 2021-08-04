@@ -5,8 +5,14 @@
 	<header id="header">
 		<div class="content">
 			<h1>TEST</h1>
-			<div>{{ data }}</div>
+			<!-- <div>{{ data }}</div> -->
 
+			{% for i in data %}
+				<!-- {{ i.username }}
+				{{ i.photo }} -->
+				{{ i }}
+
+			{% endfor %}
 
 		</div>
 	</header>
