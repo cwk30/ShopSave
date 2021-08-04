@@ -5,7 +5,7 @@ from flask_login.mixins import UserMixin
 from app import app, db, bcrypt, login_manager
 from flask import (render_template, jsonify, make_response, url_for, flash, redirect, request, abort, session)
 from flask_login import login_user, current_user, logout_user, login_required
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, select, create_engine
 from flask_sqlalchemy import Pagination
 from app.forms import (UserRegistrationForm, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
 from app.models import (User, Voucher, Vouchercat)
@@ -157,16 +157,28 @@ def voucherqr(voucherid):
     qr.save("app/" + filePath, "JPEG")
     reply={'filePath': filePath}
     return make_response(jsonify(reply), 200)
+
 # @app.route('/user/voucherwallet/<string:cashiername>/testing',methods=['GET'])
 # @login_required 
 # def testing(cashiername):
-#     data = db.session.query(Voucher, User)\
-#         .filter(
-#         (Voucher.username == current_user.username, Voucher.cashiername==cashiername, Voucher.status == 1)
-#         & (Voucher.username==User.username)
-#         ).all()
+#     # data = Voucher.query\
+#     #     .join(User)\
+#     #     .filter_by(Voucher.username==User.username).all()
+#     data = select(Voucher).where(
+#                 and_(
+#                     Voucher.cashiername == 'cashier1',
+#                     Voucher.value == 20
+#                 )
+#             )
 #     print(data)
-#     return jsonify({'Voucher list': data.get_data()})
+#     engine = create_engine('sqlite:///site.db')
+#     with engine.connect() as con:
+
+#         rs = con.execute('SELECT * FROM Voucher')
+
+#     for row in rs:
+#         print(row)
+#     return render_template('notyet.html')
 
 @app.route('/voucher/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
@@ -235,8 +247,9 @@ def checkout():
         for i in range(quantity):
             db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate))
         db.session.commit()
-        # return render_template('test.html', data=quantity)
-        return redirect(url_for('uservoucherwallet'))
+        voucher_purchased = Vouchercat.query.filter_by(id = voucherId).all()
+        return render_template('purchase_voucher_confirm.html', quantity=quantity, value=voucher_purchased[0].value, cashiername=voucher_purchased[0].cashiername)
+        # return redirect(url_for('uservoucherwallet'))
     return render_template('checkout.html', coForm=coForm)
 
 @app.route('/elements')

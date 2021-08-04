@@ -1,0 +1,54 @@
+{% extends "userlayout.html" %}
+
+{% block content %}
+
+<!-- Nav -->
+<div class="container">
+	<input type="radio" name="s" id="home" checked>
+    <input type="radio" name="s" id="wallet">
+    <input type="radio" name="s" id="code">
+	<nav>
+		<ul>
+			<label class="home" for="home">
+				<a href="{{url_for('userhome')}}">
+					<i class='bx bx-home'></i>
+				</a>
+			</label>
+			<label class="wallet" for="wallet">
+				<a href="{{url_for('uservoucherwallet')}}">
+					<i class='bx bx-wallet'></i>
+				</a>
+			</label>
+			<label class="code" for="code">
+				<a href="{{url_for('userprofile')}}">
+					<i class='bx bx-user'></i>
+				</a>
+			</label>
+		</ul>
+	</nav>
+</div>
+
+
+<!-- Banner -->
+	<section id="banner" class="major">
+		<div class="inner">
+			<header class="major">
+				<h1>Successful</h1>
+			</header>
+			<div class="content">
+				{% if quantity == 1 %}
+					<p>You have purchased {{ quantity }} voucher from {{ cashiername }} worth ${{ value }}</p>
+					<ul class="actions">
+						<li><a href="{{url_for('uservoucher', cashiername=cashiername)}}" class="button next scrolly">View it here!</a></li>
+					</ul>
+				{% else %}
+					<p>You have purchased {{ quantity }} vouchers from {{ cashiername }} worth ${{ value }}</p>
+					<ul class="actions">
+						<li><a href="{{url_for('uservoucher', cashiername=cashiername)}}" class="button next scrolly">View them here!</a></li>
+					</ul>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+
+{% endblock %}
