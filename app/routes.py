@@ -195,13 +195,21 @@ def voucher(voucherid):
             errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
             return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
     voucherData = Vouchercat.query.filter_by(id=voucherid).first()
-    return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form)
+    cashier = User.query.filter_by(username = voucherData.cashiername).first()
+    cashier_pic = cashier.photo    
+    return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, cashier_pic=cashier_pic)
 
 @app.route('/checkout', methods=['GET', 'POST'])
 def checkout():
     voucherId = session['voucherID']
     quantity = session['quantity']
     coForm = CheckoutForm()
+    if request.method == 'GET':
+        coForm.nameOnCard.data = "John Davis"
+        coForm.creditCardNumber.data = 4119528685973112
+        coForm.expirationMonth.data = 12
+        coForm.expirationYear.data = 2024
+        coForm.cvv.data = 621
     if coForm.validate_on_submit():
         errorMessage=[]
         error = False
