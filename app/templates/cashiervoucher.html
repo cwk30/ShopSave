@@ -28,6 +28,9 @@
 {% if alert %}
 {{alert}}
 {% endif %}
+<div id ="icon" style="margin-left: 80%;" >
+	<a href="{{url_for('voucherCreate')}}"><i class="fas fa-plus-circle fa-2x" style="color:white;" ></i></a>
+</div>
 {% for voucher in vouchers %}
 <div style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 width: 90%;
