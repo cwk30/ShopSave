@@ -87,7 +87,7 @@ class CashierLoginForm(FlaskForm):
     submit = SubmitField('Login') 
 
 class BuyForm(FlaskForm):
-    quantity = IntegerField('Quantity', validators=[Required(), NumberRange(min=1, message="Qty must be at least 1")])
+    quantity = IntegerField('Quantity', validators=[Required()])
 
     submit = SubmitField('Buy')
     # def validate_purchase(self, qtyBought, voucherId):
