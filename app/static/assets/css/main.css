@@ -4736,3 +4736,41 @@ div.update-button ul.actions {
   margin-right: auto;
 
 }
+
+
+.fieldsbutton .share-button{
+  height:3.5em;
+  width: 3.5em;
+  border-radius: 50%;
+  padding-left:0.8%;
+  padding-right: 0;
+  font-size: 12px;
+
+}
+
+.share-button-body .fieldsbutton {
+  display: flex;
+}
+
+.share-button-body .fieldsbutton h4{
+  vertical-align: middle; 
+  margin-right: auto;
+  margin-top: auto;
+  margin-bottom: auto;
+} 
+.share-button-body .fieldsbutton button{
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: auto;
+  margin-left: 0;
+}
+
+#shareBtn.share-button .bx{
+  margin: 0 auto;
+  
+  justify-content: center;
+  background-color: none;
+  font-size: 25px;
+  vertical-align: middle;
+  border-style: solid;
+}

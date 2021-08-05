@@ -40,51 +40,16 @@
 									<header class="major">
 										<h1>{{ voucherData.cashiername }}</h1>
 									</header>
-									<div class="voucher-card">
+									<div class="voucher-card" style="height:auto;padding-top: 5% ;padding-bottom: 5%">
 										<div class="voucher-main">
 										  <div class="voucher-co-img">
 											<img src="{{url_for('static', filename='uploads/'+cashier_pic)}}" alt="Image description">
 										  </div>
-										  <div class="voucher-vertical"></div>
-										  <div class="voucher-content">
+										  <div class="voucher-vertical", style = "margin-left: 5%; margin-right: 0;"></div>
+										  <div class="voucher-content"style = "margin-right: 5%">
 											<div class="voucher-title">Voucher</div>
 											<div class="voucher-content">$ <span>{{ voucherData.value }}</span></div>
 											<div class="voucher-expiry">Valid for {{ voucherData.expirydur }} Days</div>
-											<div class="claim-button-body">
-												<button value = {{voucherData.cashiername}} id ="shareBtn"  style="width:100%; display: flex; justify-content:center;" class="claim-button">Share</button>
-												<script>
-												  document.querySelector('#shareBtn')
-												  .addEventListener('click', event => {
-												
-													// Fallback, Tries to use API only
-													// if navigator.share function is
-													// available
-													if (navigator.share) {
-													  navigator.share({
-												
-														// Title that occurs over
-														// web share dialog
-														title: '{{voucherData.cashiername}}'+'ShopSave Voucher',
-												
-														// URL to share
-														url: "{{url_for('voucher', voucherid=voucherData.id)}}"
-													  }).then(() => {
-														console.log('Thanks for sharing!');
-													  }).catch(err => {
-												
-														// Handle errors, if occured
-														console.log(
-														"Error while using Web share API:");
-														console.log(err);
-													  });
-													} else {
-												
-													  // Alerts user if API not available 
-													  alert("Browser doesn't support this API !");
-													}
-												  })
-												</script>
-											  </div>
 										  </div>
 										</div>
 									  </div>
@@ -98,7 +63,46 @@
 										<h3 id="content">Available: {{ voucherData.quantity }}</h3>
 										<h3 id="content">Sold {{ voucherData.sold }}</h3>
 										<p>This voucher can be used for any products offered by {{ voucherData.cashiername }}</p>
-										
+										<div class="share-button-body">
+											<div class="fieldsbutton">
+											<button value = {{voucherData.cashiername}} id ="shareBtn"  class="share-button"><i class="bx bx-share-alt"></i>
+											</button>
+											<script>
+											  document.querySelector('#shareBtn')
+											  .addEventListener('click', event => {
+											
+												// Fallback, Tries to use API only
+												// if navigator.share function is
+												// available
+												if (navigator.share) {
+												  navigator.share({
+											
+													// Title that occurs over
+													// web share dialog
+													title: '{{voucherData.cashiername}}'+'ShopSave Voucher',
+											
+													// URL to share
+													url: "{{url_for('voucher', voucherid=voucherData.id)}}"
+												  }).then(() => {
+													console.log('Thanks for sharing!');
+												  }).catch(err => {
+											
+													// Handle errors, if occured
+													console.log(
+													"Error while using Web share API:");
+													console.log(err);
+												  });
+												} else {
+											
+												  // Alerts user if API not available 
+												  alert("Browser doesn't support this API !");
+												}
+											  })
+											</script>
+										  </div>
+										</div>
+
+
 								</div>
 							</section>
 					</div>
