@@ -27,10 +27,12 @@
 </div>
 <!-- Header -->
 		<div class="content">
+			<div class = "inner">
+
 			<h1>Update Form Details</h1>
 			<form method="POST" action="">
 				{{ updateform.hidden_tag() }}
-				<div class="fields">
+				<div class="fields" >
 					<div class="field half">	
 						{% if errorMessage %}
 							<div class="invalid-feedback">
@@ -72,10 +74,12 @@
 						{% endif %}
 					</div>
 				</div>
-				<ul class="actions">
-					{{ updateform.submit(class="btn btn-outline-info") }}
-				</ul>
+				<div class = "update-button">
+					<ul class="actions">
+						{{ updateform.submit(class="btn btn-outline-info") }}
+					</ul>
+				</div>
 			</form>
-
+		</div>
 		</div>
 {% endblock %}
