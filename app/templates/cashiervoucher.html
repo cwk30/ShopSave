@@ -1,0 +1,68 @@
+{% extends "cashierlayout.html" %}
+{% block content %}
+
+<div class="container">
+	<input type="radio" name="s" id="home" checked>
+	<input type="radio" name="s" id="code">
+	<input type="radio" name="s" id="profile">
+	<nav>
+		<ul>
+			<label class="home" for="home">
+				<a href="{{url_for('cashierhome')}}">
+					<i class='bx bx-home'></i>
+				</a>
+			</label>
+			<label class="code" for="code">
+				<a href="{{url_for('cashierqr')}}">
+					<i class='bx bx-qr'></i>
+				</a>
+			</label>
+			<label class="profile" for="profile">
+				<a href="{{url_for('cashierprofile')}}">
+					<i class='bx bx-user'></i>
+				</a>
+			</label>
+		</ul>
+	</nav>
+</div>
+{% if alert %}
+{{alert}}
+{% endif %}
+<div id ="icon" style="margin-left: 80%;" >
+	<a href="{{url_for('voucherCreate')}}"><i class="fas fa-plus-circle fa-2x" style="color:white;" ></i></a>
+</div>
+{% for voucher in vouchers %}
+<div style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+width: 90%;
+background-color:#ffffff;
+border-radius: 5px; display:flex; flex-direction:row; justify-content: space-around;
+margin:auto; margin-bottom: 10px;">
+
+	<div>
+		<div id="card-content" style="display:flex; flex-direction: column;justify-content: flex-start;">
+			<U style="color:black">
+				<h2 style="color:black">{{ voucher.cashiername}}</h2>
+			</U>
+			<p style="color:black">Cost: ${{ voucher.cost }}</p>
+			<p style="color:black">Value: ${{ voucher.value }}</p>
+			<p style="color:black">Expiry Duration: {{ voucher.expirydur }} days</p>
+			<h3 style="color:#dc143c;">Quantity: {{ voucher.quantity }}
+				Vouchers</h3>
+		</div>
+	</div>
+
+	<div id="icon" style="display:flex; flex-direction: column; justify-content: space-around;">
+		<a href="{{url_for('voucherUpdate', voucherid=voucher.id)}}">
+			<p>
+				<i class="fas fa-edit fa-lg" style="color:black;margin-left:5px;">
+					Edit</i>
+			</p>
+		</a>
+		<a href="{{url_for('voucherDelete', voucherid=voucher.id)}}">
+			<p><i class="fas fa-trash-alt fa-lg" style="color:black; margin-left:5px;"> Delete </i></p>
+		</a>
+	</div>
+
+</div>
+{% endfor %}
+{% endblock %}

@@ -1,23 +1,43 @@
 {% extends "cashierlayout.html" %}
 
 {% block content %}
+<div class="container">
+	<input type="radio" name="s" id="home" checked>
+	<input type="radio" name="s" id="code">
+	<input type="radio" name="s" id="profile">
+	<nav>
+		<ul>
+			<label class="home" for="home">
+				<a href="{{url_for('cashierhome')}}">
+					<i class='bx bx-home'></i>
+				</a>
+			</label>
+			<label class="code" for="code">
+				<a href="{{url_for('cashierqr')}}">
+					<i class='bx bx-qr'></i>
+				</a>
+			</label>
+			<label class="profile" for="profile">
+				<a href="{{url_for('cashierprofile')}}">
+					<i class='bx bx-user'></i>
+				</a>
+			</label>
+		</ul>
+	</nav>
+</div>
 <!-- Header -->
-	<header id="header">
 		<div class="content">
 			<h1>Update Form Details</h1>
 			<form method="POST" action="">
 				{{ updateform.hidden_tag() }}
 				<div class="fields">
-					<div class="field half">
+					<div class="field half">	
 						{% if errorMessage %}
 							<div class="invalid-feedback">
 								<span style="color:red">{{ errorMessage[0] }}</span> 
 							</div>
 							{{ updateform.value.label(class="form-control-label") }}
 							{{ updateform.value(class="form-control form-control-lg is-invalid") }}
-							<br>
-							{{ updateform.transfer.label(class="form-check") }}
-							{{ updateform.transfer(class="form-control form-control-lg is-invalid") }}
 							<br>
 							<div class="invalid-feedback">
 								<span style="color:red">{{ errorMessage[1] }}</span> 
@@ -41,9 +61,6 @@
 							{{ updateform.value.label(class="form-control-label") }}
 							{{ updateform.value(class="form-control form-control-lg") }}
 							<br>
-							{{ updateform.transfer.label(class="form-control-label") }}
-							{{ updateform.transfer(class="form-check-input") }}
-							<br>
 							{{ updateform.cost.label(class="form-control-label") }}
 							{{ updateform.cost(class="form-control form-control-lg") }}
 							<br>
@@ -55,11 +72,10 @@
 						{% endif %}
 					</div>
 				</div>
-			<ul class="actions">
-				{{ updateform.submit(class="btn btn-outline-info") }}
-			</ul>
+				<ul class="actions">
+					{{ updateform.submit(class="btn btn-outline-info") }}
+				</ul>
 			</form>
 
 		</div>
-	</header>
 {% endblock %}

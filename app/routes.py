@@ -248,12 +248,12 @@ def checkout():
         voucher_expiry_date = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(epoch_day.days - 1)
         expirydate = voucher_expiry_date.strftime("%d-%b-%Y")
         # voucher = Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate)
-        
+        today_epoch = datetime.datetime(today.year,today.month,today.day) - datetime.datetime(1970,1,1) + datetime.timedelta(days=1)
         vouchercat.quantity = vouchercat.quantity - quantity
         vouchercat.sold = vouchercat.sold + quantity
         
         for i in range(quantity):
-            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate))
+            db.session.add(Voucher(username=session["username"], cashiername=vouchercat.cashiername, expiry=epoch_day.days, value=vouchercat.value, transfer=vouchercat.transfer, status=1, expirydate=expirydate, sold=today_epoch.days))
         db.session.commit()
         voucher_purchased = Vouchercat.query.filter_by(id = voucherId).all()
         return render_template('purchase_voucher_confirm.html', quantity=quantity, value=voucher_purchased[0].value, cashiername=voucher_purchased[0].cashiername)
@@ -290,8 +290,10 @@ def cashierhome():
         soldDate = datetime.datetime(1970,1,1,0,0) + datetime.timedelta(soldEpoch - 1)
         month = soldDate.month
         year = soldDate.year
-        cost = Vouchercat.query.filter_by(value=i.value, cashiername=cashier).first().cost
-        chartDic[month] += cost
+        VC = Vouchercat.query.filter_by(value=i.value, cashiername=cashier).first()
+        if VC is not None:
+            cost = VC.cost
+            chartDic[month] += cost
         # print(cost)
         # if year not in chartDic:
         #     chartDic[year] = {}
@@ -321,10 +323,14 @@ def cashierhome():
 def manageVouchers():
     cashier = session["username"]
     voucherdata = Vouchercat.query.filter_by(cashiername=cashier).all()
-    # CHECK WITH JQ WHAT DATA HE NEEDS
-    return render_template('cashiervouchers.html', voucherdata=voucherdata)
-    # return render_template('cashiervouchers.html', data=voucherdata)
-    # return render_template('manageVouchers.html', voucherdata=voucherdata)
+    # for i in range(len(voucherdata)):
+    #     data.append((voucherdata[i], str(voucherdata[i].id)))
+    # voucherkeys = [str(voucher.id) for voucher in voucherdata]
+    if len(voucherdata) == 0:
+        message = "Your business has no voucher yet. Create some vouchers now!"
+        return render_template('cashiervoucher.html', vouchers=voucherdata, alert=message)
+    return render_template('cashiervoucher.html', vouchers=voucherdata)
+
 
 @app.route('/voucher/update/<int:voucherid>', methods=['GET', 'POST'])
 @login_required
@@ -363,10 +369,14 @@ def voucherCreate():
 @login_required
 def voucherDelete(voucherid):
     # Send back to cashiervouchers.html with an alert
-    voucherDeleted = Vouchercat.query.filter_by(id=voucherid).delete()
-    alertMessage = "$" + str(voucherDeleted.value) + " Voucher has been deleted"
+    cashier = session["username"]
+    voucherdata = Vouchercat.query.filter_by(cashiername=cashier).all()
+    voucherDeleted = Vouchercat.query.filter_by(id=voucherid).first()
+    voucherDelete = Vouchercat.query.filter_by(id=voucherid).delete()
+    alertMessage = "Voucher has been deleted"
     db.session.commit()
-    return render_template('', alert=alertMessage)
+
+    return render_template('cashiervoucher.html', vouchers=voucherdata, alert=alertMessage)    
 
 @app.route("/cashier/account", methods=['GET', 'POST'])
 @login_required 
@@ -462,10 +472,14 @@ def save_picture(form_picture):
     i.thumbnail(output_size)
     
     i.save(picture_path)
-
     return picture_fn
 
 # @app.errorhandler(Exception)
 # def server_error(err):
 #     app.logger.exception(err)
 #     return unauthorized_callback()
+
+# @app.route('/develop')
+# #@login_required
+# def develop():
+#     return render_template('card.html')

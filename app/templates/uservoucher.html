@@ -151,49 +151,12 @@
 							<div class="voucher-title">{{ vouchers.cashiername }}</div>
 							<div class="voucher-content">$ <span>{{ vouchers.value }}</span></div>
 							<div class="voucher-expiry">Valid till {{ vouchers.expirydate }}</div>
-							<div class="claim-button-body">
-								<button id="shareBtn" class="claim-button">Share</button></a>
-							  </div>
 						  </div>
 						</div>
 						<div class="claim-button-body">
 							<button value = {{vouchers.cashiername}} id = {{ vouchers.id }}  style="width:100%; display: flex; justify-content:center;" class="claim-button" onclick="makeApiCall(this.id)">Claim</button>
-							<script>
-								document.querySelector('#shareBtn')
-								.addEventListener('click', event => {
-						  
-									// Fallback, Tries to use API only
-									// if navigator.share function is
-									// available
-									if (navigator.share) {
-										navigator.share({
-						  
-											// Title that occurs over
-											// web share dialog
-											title: '{{vouchers.cashiername}}'+'ShopSave Voucher',
-						  
-											// URL to share
-											url: "{{url_for('uservoucherstore(cashiername)')}}"
-										}).then(() => {
-											console.log('Thanks for sharing!');
-										}).catch(err => {
-						  
-											// Handle errors, if occured
-											console.log(
-											"Error while using Web share API:");
-											console.log(err);
-										});
-									} else {
-						  
-										// Alerts user if API not available 
-										alert("Browser doesn't support this API !");
-									}
-								})
-							</script>
 						</div>
-					  </div>
-
-
+					</div>
 				{% endfor %}
 			</section>
 {% endblock %}
