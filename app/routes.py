@@ -184,19 +184,19 @@ def voucherqr(voucherid):
 @login_required
 def voucher(voucherid):
     buy_form=BuyForm()
+    voucherData = Vouchercat.query.filter_by(id=voucherid).first()
+    cashier = User.query.filter_by(username = voucherData.cashiername).first()
+    cashier_pic = cashier.photo
     if buy_form.validate_on_submit():
         voucherData = Vouchercat.query.filter_by(id=voucherid).first()       
         quantity = buy_form.quantity.data
-        if quantity <= voucherData.quantity:
+        if 0 < quantity <= voucherData.quantity:
             session['voucherID'] = voucherData.id
             session['quantity'] = quantity
             return redirect(url_for('checkout'))
         else:
             errorMessage = "Not able to purchase " + str(quantity) + " vouchers. Only " + str(voucherData.quantity) + " vouchers available."
-            return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, errorMessage=errorMessage)
-    voucherData = Vouchercat.query.filter_by(id=voucherid).first()
-    cashier = User.query.filter_by(username = voucherData.cashiername).first()
-    cashier_pic = cashier.photo    
+            return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, cashier_pic=cashier_pic, errorMessage=errorMessage)
     return render_template('voucher.html', voucherData=voucherData, buy_form=buy_form, cashier_pic=cashier_pic)
 
 @app.route('/checkout', methods=['GET', 'POST'])
