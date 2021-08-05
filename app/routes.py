@@ -7,7 +7,7 @@ from flask import (render_template, jsonify, make_response, url_for, flash, redi
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import or_, and_, select, create_engine
 from flask_sqlalchemy import Pagination
-from app.forms import (UserRegistrationForm, VoucherUpdate,VoucherCreate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
+from app.forms import (UserRegistrationForm, VoucherUpdate, VoucherCreate, UserLoginForm, BuyForm, UpdateAccountForm, CashierRegistrationForm, CashierLoginForm, CheckoutForm)
 from app.models import (User, Voucher, Vouchercat)
 from flask import request
 import qrcode
@@ -349,6 +349,7 @@ def voucherUpdate(voucherid):
         voucherData.cost = voucherUpdateForm.cost.data
         voucherData.expirydur = voucherUpdateForm.expirydur.data
         voucherData.quantity = voucherUpdateForm.quantity.data
+        voucherData.transfer = 0
 
         db.session.commit()
         flash('Your voucher has been updated', 'success')
@@ -360,7 +361,8 @@ def voucherUpdate(voucherid):
 def voucherCreate():
     voucherCreateForm = VoucherCreate()
     if voucherCreateForm.validate_on_submit():
-        vouchercat = Vouchercat(value=voucherCreateForm.value.data, cost=voucherCreateForm.cost.data,expirydur=voucherCreateForm.expirydur.data,quantity=voucherCreateForm.quantity.data)
+        vouchercat = Vouchercat(value=voucherCreateForm.value.data, transfer=0, cost=voucherCreateForm.cost.data,expirydur=voucherCreateForm.expirydur.data, quantity=voucherCreateForm.quantity.data, cashiername=session['username'], sold=0)
+        db.session.add(vouchercat)
         db.session.commit()
         flash('Your voucher has been created', 'success')
     return render_template('vouchercreate.html', form=voucherCreateForm) 
