@@ -326,6 +326,9 @@ def manageVouchers():
     # for i in range(len(voucherdata)):
     #     data.append((voucherdata[i], str(voucherdata[i].id)))
     # voucherkeys = [str(voucher.id) for voucher in voucherdata]
+    if len(voucherdata) == 0:
+        message = "Your business has no voucher yet. Create some vouchers now!"
+        return render_template('cashiervoucher.html', vouchers=voucherdata, alert=message)
     return render_template('cashiervoucher.html', vouchers=voucherdata)
 
 
