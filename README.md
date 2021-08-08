@@ -10,7 +10,7 @@ This app was created to allow merchants to sell e-vouchers to users, as well as 
 
 # Features
 
-Merchants
+## Merchants
 
 Registration/Login Portal
 
@@ -24,7 +24,7 @@ Always on QR code scanner to scan store vouchers, ready to be deployed at checko
 
 
 
-Users
+## Users
 
 Shop through the list of stores, and purchase vouchers from said store
 
@@ -33,6 +33,7 @@ Voucher wallet to browse owned vouchers
 Generate QR code when claiming vouchers
 
 
+## Testing
 For intent and purposes, all features are working, except the payment portal. Feel free to create an account to test the features, or use the following test account:
 
 Merchant (Cashier) Account
@@ -49,7 +50,7 @@ user
 password
 
 
-Technology
+# Technology
 
 The project was created using HTML5/CSS/JS + Flask/SQLite.
 
